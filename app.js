@@ -1,6 +1,10 @@
 (() => {
   "use strict";
 
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
+
   const cfg = window.WOND_SUPABASE || {};
 
   const configured =
@@ -14,12 +18,31 @@
       ? window.supabase.createClient(cfg.url, cfg.anonKey)
       : null;
 
+
+  /* =========================================================
+     HELPERS
+  ========================================================= */
+
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
 
-  const langs = window.WOND_LANGS || [];
+  const langs = window.WOND_LANGS || [
+    "uk",
+    "cs",
+    "sl",
+    "sk",
+    "de",
+    "en",
+    "hr",
+    "sr",
+    "it",
+    "hu",
+    "pl",
+    "ro"
+  ];
 
   let lang = getLang();
+
   let session = null;
   let profile = null;
 
@@ -28,236 +51,249 @@
   let translations = window.WOND_PRICE_TRANSLATIONS || {};
   let localPrices = window.WOND_LOCAL_PRICES || {};
 
+
+  /* =========================================================
+     FIXED VAT RATES
+     These rates are used for price calculation.
+  ========================================================= */
+
+  const FIXED_VAT_RATES = {
+    CZ: 0.21,
+    UA: 0.20,
+    SI: 0.22,
+    SK: 0.23,
+    DE: 0.19,
+    PL: 0.23,
+    RO: 0.21,
+    HU: 0.27,
+    HR: 0.25,
+    GB: 0.20
+  };
+
+
+  /* =========================================================
+     UI TRANSLATIONS
+  ========================================================= */
+
   const ui = {
     uk: {
       country: "Країна",
       price: "Ціна",
-      service: "Робота",
-      currency: "Валюта",
+      service: "Послуга",
       without: "Без ПДВ",
       with: "З ПДВ",
       both: "Обидва",
-      prices_admin: "Ціни по країнах",
-      price_country: "Країна для цін",
-      translations_admin: "Переклади робіт",
-      translation_lang: "Мова перекладів",
+      prices_title: "Повний прайс-лист послуг",
+      prices_lead: "Орієнтовні ціни. Кінцева ціна залежить від обсягу та складності роботи.",
+      notice: "Виїзд на місце до 50 км: 500 Kč",
+      area: "Зона роботи: Брно та околиці.",
+      prices_countries: "Ціни за країнами",
       save_prices: "Зберегти ціни",
-      save_translations: "Зберегти переклади",
-      category: "Категорія",
-      unit: "Одиниця"
+      not_configured: "Supabase ще не налаштовано."
     },
 
     cs: {
       country: "Země",
       price: "Cena",
       service: "Služba",
-      currency: "Měna",
       without: "Bez DPH",
       with: "Včetně DPH",
       both: "Obojí",
-      prices_admin: "Ceny podle zemí",
-      price_country: "Země pro ceny",
-      translations_admin: "Překlady služeb",
-      translation_lang: "Jazyk překladů",
+      prices_title: "Kompletní ceník služeb",
+      prices_lead: "Orientační ceny. Konečná cena závisí na rozsahu a náročnosti práce.",
+      notice: "Výjezd na místo do 50 km: 500 Kč",
+      area: "Oblast působení: Brno a okolí.",
+      prices_countries: "Ceny podle zemí",
       save_prices: "Uložit ceny",
-      save_translations: "Uložit překlady",
-      category: "Kategorie",
-      unit: "Jednotka"
+      not_configured: "Supabase není nakonfigurováno."
     },
 
     sl: {
       country: "Država",
       price: "Cena",
       service: "Storitev",
-      currency: "Valuta",
       without: "Brez DDV",
       with: "Z DDV",
       both: "Oboje",
-      prices_admin: "Cene po državah",
-      price_country: "Država za cene",
-      translations_admin: "Prevodi storitev",
-      translation_lang: "Jazyk prevodov",
+      prices_title: "Celoten cenik storitev",
+      prices_lead: "Okvirne cene. Končna cena je odvisna od obsega in zahtevnosti dela.",
+      notice: "Izvoz na lokacijo do 50 km: 500 Kč",
+      area: "Območje dela: Brno in okolica.",
+      prices_countries: "Cene po državah",
       save_prices: "Shrani cene",
-      save_translations: "Shrani prevode",
-      category: "Kategorija",
-      unit: "Enota"
+      not_configured: "Supabase ni konfiguriran."
     },
 
     sk: {
       country: "Krajina",
       price: "Cena",
       service: "Služba",
-      currency: "Mena",
       without: "Bez DPH",
       with: "S DPH",
       both: "Oboje",
-      prices_admin: "Ceny podľa krajín",
-      price_country: "Krajina pre ceny",
-      translations_admin: "Preklady služieb",
-      translation_lang: "Jazyk prekladov",
+      prices_title: "Kompletný cenník služieb",
+      prices_lead: "Orientačné ceny. Konečná cena závisí od rozsahu a náročnosti práce.",
+      notice: "Výjazd na miesto do 50 km: 500 Kč",
+      area: "Oblasť pôsobenia: Brno a okolie.",
+      prices_countries: "Ceny podľa krajín",
       save_prices: "Uložiť ceny",
-      save_translations: "Uložiť preklady",
-      category: "Kategória",
-      unit: "Jednotka"
+      not_configured: "Supabase nie je nakonfigurované."
     },
 
     de: {
       country: "Land",
       price: "Preis",
       service: "Leistung",
-      currency: "Währung",
       without: "Ohne MwSt.",
       with: "Inkl. MwSt.",
-      both: "Beides",
-      prices_admin: "Preise nach Ländern",
-      price_country: "Land für Preise",
-      translations_admin: "Übersetzungen der Leistungen",
-      translation_lang: "Sprache der Übersetzungen",
+      both: "Beide",
+      prices_title: "Komplette Preisliste",
+      prices_lead: "Richtpreise. Der Endpreis hängt vom Umfang und Schwierigkeitsgrad der Arbeit ab.",
+      notice: "Anfahrt bis 50 km: 500 Kč",
+      area: "Einsatzgebiet: Brünn und Umgebung.",
+      prices_countries: "Preise nach Ländern",
       save_prices: "Preise speichern",
-      save_translations: "Übersetzungen speichern",
-      category: "Kategorie",
-      unit: "Einheit"
+      not_configured: "Supabase ist nicht konfiguriert."
     },
 
     en: {
       country: "Country",
       price: "Price",
       service: "Service",
-      currency: "Currency",
       without: "Without VAT",
       with: "With VAT",
       both: "Both",
-      prices_admin: "Prices by country",
-      price_country: "Country for prices",
-      translations_admin: "Service translations",
-      translation_lang: "Translation language",
+      prices_title: "Complete service price list",
+      prices_lead: "Indicative prices. The final price depends on the scope and complexity of the work.",
+      notice: "Travel to site up to 50 km: 500 Kč",
+      area: "Service area: Brno and surroundings.",
+      prices_countries: "Prices by country",
       save_prices: "Save prices",
-      save_translations: "Save translations",
-      category: "Category",
-      unit: "Unit"
+      not_configured: "Supabase is not configured."
     },
 
     hr: {
       country: "Država",
       price: "Cijena",
       service: "Usluga",
-      currency: "Valuta",
       without: "Bez PDV-a",
       with: "S PDV-om",
       both: "Oboje",
-      prices_admin: "Cijene po državama",
-      price_country: "Država za cijene",
-      translations_admin: "Prijevodi usluga",
-      translation_lang: "Jezik prijevoda",
+      prices_title: "Kompletan cjenik usluga",
+      prices_lead: "Okvirne cijene. Konačna cijena ovisi o opsegu i složenosti rada.",
+      notice: "Dolazak na lokaciju do 50 km: 500 Kč",
+      area: "Područje rada: Brno i okolica.",
+      prices_countries: "Cijene po državama",
       save_prices: "Spremi cijene",
-      save_translations: "Spremi prijevode",
-      category: "Kategorija",
-      unit: "Jedinica"
+      not_configured: "Supabase nije konfiguriran."
     },
 
     sr: {
       country: "Država",
       price: "Cena",
       service: "Usluga",
-      currency: "Valuta",
       without: "Bez PDV-a",
       with: "Sa PDV-om",
       both: "Oboje",
-      prices_admin: "Cene po državama",
-      price_country: "Država za cene",
-      translations_admin: "Prevodi usluga",
-      translation_lang: "Jezik prevoda",
+      prices_title: "Kompletan cenovnik usluga",
+      prices_lead: "Okvirne cene. Konačna cena zavisi od obima i složenosti rada.",
+      notice: "Dolazak na lokaciju do 50 km: 500 Kč",
+      area: "Područje rada: Brno i okolina.",
+      prices_countries: "Cene po državama",
       save_prices: "Sačuvaj cene",
-      save_translations: "Sačuvaj prevode",
-      category: "Kategorija",
-      unit: "Jedinica"
+      not_configured: "Supabase nije konfigurisan."
     },
 
     it: {
       country: "Paese",
       price: "Prezzo",
       service: "Servizio",
-      currency: "Valuta",
       without: "Senza IVA",
       with: "Con IVA",
       both: "Entrambi",
-      prices_admin: "Prezzi per paese",
-      price_country: "Paese per i prezzi",
-      translations_admin: "Traduzioni dei servizi",
-      translation_lang: "Lingua delle traduzioni",
+      prices_title: "Listino completo dei servizi",
+      prices_lead: "Prezzi indicativi. Il prezzo finale dipende dall'entità e dalla complessità del lavoro.",
+      notice: "Trasferta fino a 50 km: 500 Kč",
+      area: "Area di lavoro: Brno e dintorni.",
+      prices_countries: "Prezzi per paese",
       save_prices: "Salva prezzi",
-      save_translations: "Salva traduzioni",
-      category: "Categoria",
-      unit: "Unità"
+      not_configured: "Supabase non è configurato."
     },
 
     hu: {
       country: "Ország",
       price: "Ár",
       service: "Szolgáltatás",
-      currency: "Pénznem",
       without: "ÁFA nélkül",
       with: "ÁFÁ-val",
       both: "Mindkettő",
-      prices_admin: "Országonkénti árak",
-      price_country: "Árlista országa",
-      translations_admin: "Szolgáltatásfordítások",
-      translation_lang: "Fordítás nyelve",
+      prices_title: "Teljes szolgáltatási árlista",
+      prices_lead: "Tájékoztató árak. A végső ár a munka mennyiségétől és összetettségétől függ.",
+      notice: "Kiszállás 50 km-ig: 500 Kč",
+      area: "Munkaterület: Brno és környéke.",
+      prices_countries: "Árak országonként",
       save_prices: "Árak mentése",
-      save_translations: "Fordítások mentése",
-      category: "Kategória",
-      unit: "Egység"
+      not_configured: "A Supabase nincs konfigurálva."
     },
 
     pl: {
       country: "Kraj",
       price: "Cena",
       service: "Usługa",
-      currency: "Waluta",
       without: "Bez VAT",
       with: "Z VAT",
       both: "Obie",
-      prices_admin: "Ceny według krajów",
-      price_country: "Kraj dla cen",
-      translations_admin: "Tłumaczenia usług",
-      translation_lang: "Język tłumaczeń",
+      prices_title: "Pełny cennik usług",
+      prices_lead: "Ceny orientacyjne. Cena końcowa zależy od zakresu i trudności prac.",
+      notice: "Dojazd do 50 km: 500 Kč",
+      area: "Obszar działania: Brno i okolice.",
+      prices_countries: "Ceny według krajów",
       save_prices: "Zapisz ceny",
-      save_translations: "Zapisz tłumaczenia",
-      category: "Kategoria",
-      unit: "Jednostka"
+      not_configured: "Supabase nie jest skonfigurowane."
     },
 
     ro: {
-      country: "Țară",
+      country: "Țara",
       price: "Preț",
       service: "Serviciu",
-      currency: "Monedă",
       without: "Fără TVA",
       with: "Cu TVA",
       both: "Ambele",
-      prices_admin: "Prețuri pe țări",
-      price_country: "Țara pentru prețuri",
-      translations_admin: "Traduceri servicii",
-      translation_lang: "Limba traducerilor",
+      prices_title: "Lista completă de prețuri",
+      prices_lead: "Prețuri orientative. Prețul final depinde de amploarea și complexitatea lucrării.",
+      notice: "Deplasare până la 50 km: 500 Kč",
+      area: "Zona de lucru: Brno și împrejurimi.",
+      prices_countries: "Prețuri pe țări",
       save_prices: "Salvează prețurile",
-      save_translations: "Salvează traducerile",
-      category: "Categorie",
-      unit: "Unitate"
+      not_configured: "Supabase nu este configurat."
     }
   };
 
+
   /* =========================================================
-     TRANSLATIONS
+     TRANSLATION HELPERS
   ========================================================= */
 
   const t = (key, fallback = "") => {
     const current = window.WOND_TRANSLATIONS?.[lang] || {};
     const cs = window.WOND_TRANSLATIONS?.cs || {};
 
-    return current[key] || cs[key] || fallback || key;
+    return (
+      current[key] ||
+      cs[key] ||
+      fallback ||
+      key
+    );
   };
 
-  const u = (key) => ui[lang]?.[key] || ui.en[key] || key;
+  const u = (key) => {
+    return (
+      ui[lang]?.[key] ||
+      ui.en?.[key] ||
+      key
+    );
+  };
+
 
   /* =========================================================
      LANGUAGE
@@ -278,11 +314,16 @@
 
     const browserLang = (navigator.language || "cs").slice(0, 2);
 
-    return langs.includes(browserLang) ? browserLang : "cs";
+    return langs.includes(browserLang)
+      ? browserLang
+      : "cs";
   }
 
+
   function setLang(newLang) {
-    lang = langs.includes(newLang) ? newLang : "cs";
+    lang = langs.includes(newLang)
+      ? newLang
+      : "cs";
 
     localStorage.setItem("wond-lang", lang);
 
@@ -297,7 +338,11 @@
     $$("[data-i18n]").forEach((el) => {
       const value = t(el.dataset.i18n);
 
-      if (value !== undefined && value !== null) {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== ""
+      ) {
         el.innerHTML = value;
       }
     });
@@ -312,69 +357,202 @@
     renderPrices();
   }
 
-  const langSelect = $("#language");
-
-  if (langSelect) {
-    langs.forEach((l) => {
-      const option = document.createElement("option");
-
-      option.value = l;
-      option.textContent =
-        window.WOND_TRANSLATIONS?.[l]?.name || l.toUpperCase();
-
-      langSelect.append(option);
-    });
-
-    langSelect.addEventListener("change", (event) => {
-      setLang(event.target.value);
-    });
-  }
 
   /* =========================================================
-     COUNTRIES
+     VAT / COUNTRY NORMALIZATION
   ========================================================= */
 
   function normalizeCountry(country) {
-    const staticCountry = (window.WOND_COUNTRIES || []).find(
-      (item) => item.code === country.code
-    );
+    const rawCode = String(
+      country?.code || ""
+    ).trim().toUpperCase();
+
+    const staticCountry =
+      (window.WOND_COUNTRIES || []).find(
+        (item) => item.code === rawCode
+      ) || {};
+
+    const fixedVat =
+      FIXED_VAT_RATES[rawCode];
 
     const dbVat = Number(
-      country.vat_rate ?? country.vat
+      country?.vat_rate ??
+      country?.vat
     );
 
     const staticVat = Number(
-      staticCountry?.vat ?? staticCountry?.vat_rate ?? 0
+      staticCountry?.vat ??
+      staticCountry?.vat_rate ??
+      0
     );
 
+    let vat = 0;
+
     /*
-      If Supabase contains an old 0 VAT value,
-      do not let it overwrite the correct static VAT.
+      Priority:
+      1. Fixed VAT table
+      2. Supabase VAT
+      3. Static VAT
     */
-    const vat =
-      Number.isFinite(dbVat) && dbVat > 0
-        ? dbVat
-        : staticVat;
+
+    if (
+      Number.isFinite(fixedVat) &&
+      fixedVat > 0
+    ) {
+      vat = fixedVat;
+    } else if (
+      Number.isFinite(dbVat) &&
+      dbVat > 0
+    ) {
+      vat = dbVat;
+    } else if (
+      Number.isFinite(staticVat) &&
+      staticVat > 0
+    ) {
+      vat = staticVat;
+    }
 
     return {
       ...staticCountry,
       ...country,
-      vat,
+
+      code: rawCode,
+
+      vat: vat,
       vat_rate: vat
     };
   }
 
+
   function normalizeCountries(list) {
-    return (list || []).map(normalizeCountry);
+    const staticList =
+      window.WOND_COUNTRIES || [];
+
+    const dbList = Array.isArray(list)
+      ? list
+      : [];
+
+    const dbByCode = new Map();
+
+    dbList.forEach((country) => {
+      const code = String(
+        country?.code || ""
+      ).trim().toUpperCase();
+
+      if (code) {
+        dbByCode.set(code, country);
+      }
+    });
+
+    const result = [];
+
+    /*
+      First keep all static countries.
+      If Supabase has matching country data,
+      merge it with the static country.
+    */
+
+    staticList.forEach((staticCountry) => {
+      const code = String(
+        staticCountry.code || ""
+      ).trim().toUpperCase();
+
+      const dbCountry =
+        dbByCode.get(code);
+
+      result.push(
+        normalizeCountry(
+          dbCountry || staticCountry
+        )
+      );
+    });
+
+    /*
+      Add any extra countries that exist
+      only in Supabase.
+    */
+
+    dbList.forEach((country) => {
+      const code = String(
+        country?.code || ""
+      ).trim().toUpperCase();
+
+      if (
+        code &&
+        !result.some(
+          (item) => item.code === code
+        )
+      ) {
+        result.push(
+          normalizeCountry(country)
+        );
+      }
+    });
+
+    return result;
   }
 
-  function countryName(code) {
+
+  function getVatRate(country) {
+    if (!country) {
+      return 0;
+    }
+
+    const code = String(
+      country.code || ""
+    ).trim().toUpperCase();
+
+    /*
+      Always prefer our fixed VAT table.
+      This prevents a wrong 0 / NULL / outdated
+      value in Supabase from breaking the calculation.
+    */
+
+    if (
+      Number.isFinite(FIXED_VAT_RATES[code]) &&
+      FIXED_VAT_RATES[code] > 0
+    ) {
+      return FIXED_VAT_RATES[code];
+    }
+
+    const vatRate = Number(
+      country.vat_rate ??
+      country.vat ??
+      0
+    );
+
+    return Number.isFinite(vatRate) &&
+      vatRate > 0
+      ? vatRate
+      : 0;
+  }
+
+
+  function calculateGross(net, vatRate) {
+    const value = Number(net) || 0;
+    const vat = Number(vatRate) || 0;
+
+    return value * (1 + vat);
+  }
+
+
+  /* =========================================================
+     COUNTRY NAME
+  ========================================================= */
+
+  function countryName(code, fallback = "") {
     return (
       window.WOND_COUNTRY_NAMES?.[lang]?.[code] ||
-      countries.find((country) => country.code === code)?.name ||
+      window.WOND_COUNTRY_NAMES?.en?.[code] ||
+      fallback ||
       code
     );
   }
+
+
+  /* =========================================================
+     COUNTRY SELECT
+  ========================================================= */
 
   function renderCountrySelect() {
     const select = $("#price-country");
@@ -384,61 +562,102 @@
     }
 
     const savedCountry =
-      localStorage.getItem("wond-country") || "CZ";
-
-    const current =
-      select.value ||
-      savedCountry ||
+      localStorage.getItem("wond-country") ||
       "CZ";
+
+    const currentValue =
+      select.value || savedCountry;
 
     select.innerHTML = "";
 
     countries
-      .filter((country) => country.active !== false)
+      .filter((country) => {
+        return country.active !== false;
+      })
       .forEach((country) => {
-        const option = document.createElement("option");
+        const option =
+          document.createElement("option");
 
         option.value = country.code;
 
         option.textContent =
-          `${countryName(country.code)} — ${country.currency}`;
+          countryName(
+            country.code,
+            country.name
+          );
 
-        select.append(option);
+        select.appendChild(option);
       });
 
     const exists = countries.some(
-      (country) => country.code === current
+      (country) =>
+        country.code === currentValue &&
+        country.active !== false
     );
 
-    select.value = exists ? current : "CZ";
+    if (exists) {
+      select.value = currentValue;
+    } else if (select.options.length) {
+      select.value = "CZ";
+
+      if (
+        ![...select.options].some(
+          (option) => option.value === "CZ"
+        )
+      ) {
+        select.selectedIndex = 0;
+      }
+    }
 
     localStorage.setItem(
       "wond-country",
       select.value
     );
 
-    const vatSelect = $("#vat-mode");
+    const vatMode = $("#vat-mode");
 
-    if (vatSelect) {
-      if (vatSelect.options[0]) {
-        vatSelect.options[0].textContent = u("without");
+    if (vatMode) {
+      const without =
+        vatMode.querySelector(
+          'option[value="net"]'
+        );
+
+      const withVat =
+        vatMode.querySelector(
+          'option[value="gross"]'
+        );
+
+      const both =
+        vatMode.querySelector(
+          'option[value="both"]'
+        );
+
+      if (without) {
+        without.textContent =
+          u("without");
       }
 
-      if (vatSelect.options[1]) {
-        vatSelect.options[1].textContent = u("with");
+      if (withVat) {
+        withVat.textContent =
+          u("with");
       }
 
-      if (vatSelect.options[2]) {
-        vatSelect.options[2].textContent = u("both");
+      if (both) {
+        both.textContent =
+          u("both");
       }
     }
   }
+
 
   /* =========================================================
      SERVICES
   ========================================================= */
 
-  function serviceName(key, rawName) {
+  function serviceName(
+    key,
+    rawName
+  ) {
     return (
       translations?.[key]?.[lang] ||
       translations?.[key]?.en ||
@@ -446,6 +665,7 @@
       key
     );
   }
+
 
   function categoryName(category) {
     return (
@@ -455,46 +675,37 @@
     );
   }
 
+
   /* =========================================================
-     PRICE FORMAT
+     NUMBER FORMAT
   ========================================================= */
 
   function fmt(number, currency) {
+    const value = Number(number) || 0;
+
+    /*
+      HUF usually doesn't use decimal display here.
+      All other currencies use two decimals.
+    */
+
     const decimals =
-      currency === "HUF" ? 0 : 2;
+      currency === "HUF"
+        ? 0
+        : 2;
 
     return (
       new Intl.NumberFormat(lang, {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals
-      }).format(number) +
+      }).format(value) +
       " " +
       currency
     );
   }
 
-  function getVatRate(country) {
-    if (!country) {
-      return 0;
-    }
-
-    const vatRate = Number(
-      country.vat_rate ??
-      country.vat ??
-      0
-    );
-
-    return Number.isFinite(vatRate) && vatRate > 0
-      ? vatRate
-      : 0;
-  }
-
-  function calculateGross(net, vatRate) {
-    return net * (1 + vatRate);
-  }
 
   /* =========================================================
-     PUBLIC PRICE RENDER
+     PRICE RENDER
   ========================================================= */
 
   function renderPrices() {
@@ -505,1759 +716,910 @@
     }
 
     const mode =
-      $("#vat-mode")?.value || "net";
+      $("#vat-mode")?.value ||
+      "net";
 
     const countryCode =
-      $("#price-country")?.value || "CZ";
+      $("#price-country")?.value ||
+      localStorage.getItem("wond-country") ||
+      "CZ";
 
     const country =
       countries.find(
-        (item) => item.code === countryCode
-      ) || countries[0];
+        (item) =>
+          item.code === countryCode
+      ) ||
+      countries.find(
+        (item) => item.code === "CZ"
+      ) ||
+      countries[0];
 
     if (!country) {
       grid.innerHTML = "";
       return;
     }
 
-    const vatRate = getVatRate(country);
+    const vatRate =
+      getVatRate(country);
 
     const groups = {};
 
     services
-      .filter((service) => service.active !== false)
+      .filter(
+        (service) =>
+          service.active !== false
+      )
       .forEach((service) => {
-        if (!groups[service.category]) {
+        if (
+          !groups[service.category]
+        ) {
           groups[service.category] = [];
         }
 
-        groups[service.category].push(service);
+        groups[
+          service.category
+        ].push(service);
       });
 
     grid.innerHTML = "";
 
-    Object.entries(groups).forEach(
-      ([category, rows]) => {
-        const card =
-          document.createElement("div");
+    Object.entries(groups)
+      .forEach(
+        ([category, rows]) => {
 
-        card.className = "price-card";
+          const card =
+            document.createElement("div");
 
-        const title =
-          document.createElement("h3");
+          card.className =
+            "price-card";
 
-        title.textContent =
-          categoryName(category);
 
-        const table =
-          document.createElement("table");
+          const title =
+            document.createElement("h3");
 
-        const thead =
-          document.createElement("thead");
+          title.textContent =
+            categoryName(category);
 
-        const headerRow =
-          document.createElement("tr");
 
-        const serviceHeader =
-          document.createElement("th");
+          const table =
+            document.createElement("table");
 
-        serviceHeader.textContent =
-          u("service");
 
-        const priceHeader =
-          document.createElement("th");
+          const thead =
+            document.createElement("thead");
 
-        priceHeader.textContent =
-          u("price");
 
-        headerRow.append(
-          serviceHeader,
-          priceHeader
-        );
-
-        thead.append(headerRow);
-
-        const tbody =
-          document.createElement("tbody");
-
-        rows.forEach((service) => {
-          const tr =
+          const headerRow =
             document.createElement("tr");
 
-          const nameCell =
-            document.createElement("td");
 
-          const priceCell =
-            document.createElement("td");
+          const serviceHeader =
+            document.createElement("th");
 
-          nameCell.textContent =
-            serviceName(
-              service.item_key,
-              service.default_name
-            );
+          serviceHeader.textContent =
+            u("service");
 
-          const rawPrice = Number(
-            localPrices?.[countryCode]?.[
-              service.item_key
-            ] ?? 0
+
+          const priceHeader =
+            document.createElement("th");
+
+          priceHeader.textContent =
+            u("price");
+
+
+          headerRow.append(
+            serviceHeader,
+            priceHeader
           );
 
-          /*
-            Report price is intentionally zero
-            because it is calculated according
-            to scope.
-          */
-          if (
-            service.item_key === "report" &&
-            rawPrice === 0
-          ) {
-            priceCell.textContent =
-              t("by_scope", "dle rozsahu");
-          } else {
-            const net = rawPrice;
+          thead.append(
+            headerRow
+          );
 
-            const gross =
-              calculateGross(
-                net,
-                vatRate
+
+          const tbody =
+            document.createElement("tbody");
+
+
+          rows.forEach((service) => {
+
+            const tr =
+              document.createElement("tr");
+
+
+            const nameCell =
+              document.createElement("td");
+
+
+            const priceCell =
+              document.createElement("td");
+
+
+            nameCell.textContent =
+              serviceName(
+                service.item_key,
+                service.default_name
               );
 
-            const unit =
-              service.unit || "";
 
-            if (mode === "gross") {
-              priceCell.textContent =
-                fmt(
-                  gross,
-                  country.currency
-                ) + unit;
-            }
+            const rawPrice =
+              Number(
+                localPrices?.[
+                  countryCode
+                ]?.[
+                  service.item_key
+                ] ?? 0
+              );
 
-            else if (mode === "both") {
+
+            /*
+              Report is intentionally
+              displayed as "by scope".
+            */
+
+            if (
+              service.item_key === "report" &&
+              rawPrice === 0
+            ) {
+
               priceCell.textContent =
-                `${fmt(
+                t(
+                  "by_scope",
+                  "dle rozsahu"
+                );
+
+            } else {
+
+              const net =
+                rawPrice;
+
+              const gross =
+                calculateGross(
                   net,
-                  country.currency
-                )}${unit} / ${fmt(
-                  gross,
-                  country.currency
-                )}${unit}`;
+                  vatRate
+                );
+
+              const unit =
+                service.unit || "";
+
+
+              if (mode === "gross") {
+
+                priceCell.textContent =
+                  fmt(
+                    gross,
+                    country.currency
+                  ) + unit;
+
+              } else if (
+                mode === "both"
+              ) {
+
+                priceCell.textContent =
+                  `${fmt(
+                    net,
+                    country.currency
+                  )}${unit} / ${fmt(
+                    gross,
+                    country.currency
+                  )}${unit}`;
+
+              } else {
+
+                priceCell.textContent =
+                  fmt(
+                    net,
+                    country.currency
+                  ) + unit;
+              }
             }
 
-            else {
-              priceCell.textContent =
-                fmt(
-                  net,
-                  country.currency
-                ) + unit;
-            }
-          }
 
-          tr.append(
-            nameCell,
-            priceCell
+            tr.append(
+              nameCell,
+              priceCell
+            );
+
+            tbody.appendChild(tr);
+          });
+
+
+          table.append(
+            thead,
+            tbody
           );
 
-          tbody.append(tr);
-        });
 
-        table.append(
-          thead,
-          tbody
-        );
+          card.append(
+            title,
+            table
+          );
 
-        card.append(
-          title,
-          table
-        );
 
-        grid.append(card);
-      }
-    );
-  }
-
-  const publicCountrySelect =
-    $("#price-country");
-
-  if (publicCountrySelect) {
-    publicCountrySelect.addEventListener(
-      "change",
-      (event) => {
-        localStorage.setItem(
-          "wond-country",
-          event.target.value
-        );
-
-        renderPrices();
-      }
-    );
-  }
-
-  const vatModeSelect =
-    $("#vat-mode");
-
-  if (vatModeSelect) {
-    const savedMode =
-      localStorage.getItem(
-        "wond-vat-mode"
-      );
-
-    if (
-      savedMode === "net" ||
-      savedMode === "gross" ||
-      savedMode === "both"
-    ) {
-      vatModeSelect.value =
-        savedMode;
-    }
-
-    vatModeSelect.addEventListener(
-      "change",
-      (event) => {
-        localStorage.setItem(
-          "wond-vat-mode",
-          event.target.value
-        );
-
-        renderPrices();
-      }
-    );
-  }
-
-  /* =========================================================
-     CONTENT EDITOR
-  ========================================================= */
-
-  const contentKeys = [
-    "hero_title",
-    "hero_text",
-    "services_title",
-    "services_lead",
-    "electro",
-    "electro_text",
-    "water",
-    "water_text",
-    "assembly",
-    "assembly_text",
-    "building",
-    "building_text",
-    "company_title",
-    "company_lead",
-    "management",
-    "director_name",
-    "director_role",
-    "director_text",
-    "why_title",
-    "why_1",
-    "why_2",
-    "why_3",
-    "why_4",
-    "why_5",
-    "process_title",
-    "process_1",
-    "process_2",
-    "process_3",
-    "process_4",
-    "prices_title",
-    "prices_lead",
-    "notice",
-    "area",
-    "gallery_title",
-    "gallery_lead",
-    "contact_title"
-  ];
-
-  /* =========================================================
-     INIT
-  ========================================================= */
-
-  async function init() {
-    setLang(lang);
-
-    if (!sb) {
-      const warning =
-        $("#admin-config-warning");
-
-      if (warning) {
-        warning.hidden = false;
-        warning.textContent =
-          t("not_configured");
-      }
-
-      return;
-    }
-
-    const {
-      data: { session: currentSession }
-    } = await sb.auth.getSession();
-
-    session = currentSession;
-
-    if (session) {
-      await loadProfile();
-    }
-
-    sb.auth.onAuthStateChange(
-      (_event, currentSession) => {
-        session = currentSession;
-
-        setTimeout(
-          () => loadProfile(),
-          0
-        );
-      }
-    );
-
-    await loadPublic();
-  }
-
-  /* =========================================================
-     PUBLIC DATA
-  ========================================================= */
-
-  async function loadPublic() {
-    /*
-      SITE CONTENT
-    */
-    const { data: content } =
-      await sb
-        .from("site_content")
-        .select(
-          "lang,content_key,content_value"
-        );
-
-    (content || []).forEach((row) => {
-      if (
-        window.WOND_TRANSLATIONS?.[row.lang]
-      ) {
-        window.WOND_TRANSLATIONS[
-          row.lang
-        ][row.content_key] =
-          row.content_value;
-      }
-    });
-
-    /*
-      COUNTRIES
-    */
-    const {
-      data: countryRows
-    } = await sb
-      .from("countries")
-      .select("*")
-      .order("sort_order");
-
-    if (countryRows?.length) {
-      countries =
-        normalizeCountries(
-          countryRows
-        );
-    } else {
-      countries =
-        normalizeCountries(
-          window.WOND_COUNTRIES || []
-        );
-    }
-
-    /*
-      COUNTRY TRANSLATIONS
-    */
-    const {
-      data: countryTranslations
-    } = await sb
-      .from("country_translations")
-      .select("*");
-
-    (
-      countryTranslations || []
-    ).forEach((row) => {
-      if (
-        !window.WOND_COUNTRY_NAMES
-      ) {
-        window.WOND_COUNTRY_NAMES = {};
-      }
-
-      window.WOND_COUNTRY_NAMES[
-        row.lang
-      ] ??= {};
-
-      window.WOND_COUNTRY_NAMES[
-        row.lang
-      ][row.country_code] =
-        row.name;
-    });
-
-    /*
-      SERVICE ITEMS
-    */
-    const {
-      data: serviceRows
-    } = await sb
-      .from("service_items")
-      .select("*")
-      .order("sort_order");
-
-    if (serviceRows?.length) {
-      services = serviceRows;
-    }
-
-    /*
-      SERVICE TRANSLATIONS
-    */
-    const {
-      data: serviceTranslations
-    } = await sb
-      .from("service_translations")
-      .select("*");
-
-    if (serviceTranslations?.length) {
-      translations = {};
-
-      serviceTranslations.forEach(
-        (row) => {
-          translations[
-            row.item_key
-          ] ??= {};
-
-          translations[
-            row.item_key
-          ][row.lang] =
-            row.name;
+          grid.appendChild(card);
         }
       );
-    }
-
-    /*
-      COUNTRY PRICES
-    */
-    const {
-      data: countryPrices
-    } = await sb
-      .from("country_prices")
-      .select(
-        "country_code,item_key,price,active"
-      );
-
-    if (countryPrices?.length) {
-      localPrices = {};
-
-      countryPrices.forEach((row) => {
-        localPrices[
-          row.country_code
-        ] ??= {};
-
-        localPrices[
-          row.country_code
-        ][row.item_key] =
-          Number(row.price);
-      });
-    }
-
-    /*
-      Re-render after all public data
-      has been loaded.
-    */
-    setLang(lang);
-
-    /*
-      GALLERY
-    */
-    const {
-      data: gallery
-    } = await sb
-      .from("gallery_items")
-      .select("*")
-      .eq("active", true)
-      .order("sort_order");
-
-    if (gallery?.length) {
-      renderGallery(gallery);
-    }
   }
 
-  /* =========================================================
-     GALLERY
-  ========================================================= */
-
-  function renderGallery(items) {
-    const box = $("#gallery-grid");
-
-    if (!box) {
-      return;
-    }
-
-    box.innerHTML = "";
-
-    items.forEach((item) => {
-      const figure =
-        document.createElement("figure");
-
-      const img =
-        document.createElement("img");
-
-      const caption =
-        document.createElement(
-          "figcaption"
-        );
-
-      img.loading = "lazy";
-
-      img.src =
-        sb.storage
-          .from(cfg.bucket)
-          .getPublicUrl(
-            item.storage_path
-          )
-          .data.publicUrl;
-
-      img.alt =
-        item.alt_text ||
-        item.title ||
-        "WOND";
-
-      caption.textContent =
-        item.title || "WOND";
-
-      figure.append(
-        img,
-        caption
-      );
-
-      box.append(figure);
-    });
-  }
 
   /* =========================================================
      AUTH / PROFILE
   ========================================================= */
 
   async function loadProfile() {
-    if (!session) {
+    if (!sb || !session?.user) {
       profile = null;
-
-      const authCard =
-        $("#auth-card");
-
-      const adminPanel =
-        $("#admin-panel");
-
-      if (authCard) {
-        authCard.hidden = false;
-      }
-
-      if (adminPanel) {
-        adminPanel.hidden = true;
-      }
-
       return;
     }
 
-    const {
-      data
-    } = await sb
-      .from("profiles")
-      .select("*")
-      .eq(
-        "id",
-        session.user.id
-      )
-      .maybeSingle();
+    try {
+      const { data, error } =
+        await sb
+          .from("profiles")
+          .select("*")
+          .eq(
+            "id",
+            session.user.id
+          )
+          .maybeSingle();
 
-    profile = data;
-
-    const authCard =
-      $("#auth-card");
-
-    const adminPanel =
-      $("#admin-panel");
-
-    if (authCard) {
-      authCard.hidden = true;
-    }
-
-    if (adminPanel) {
-      adminPanel.hidden = false;
-    }
-
-    const email =
-      $("#admin-user-email");
-
-    if (email) {
-      email.textContent =
-        session.user.email;
-    }
-
-    const role =
-      $("#admin-role");
-
-    if (role) {
-      role.textContent =
-        data?.role || "admin";
-    }
-
-    const usersTab =
-      $("#users-tab");
-
-    if (usersTab) {
-      usersTab.hidden =
-        data?.role !== "owner";
-    }
-
-    await loadAdmin();
-  }
-
-  /* =========================================================
-     ADMIN
-  ========================================================= */
-
-  async function loadAdmin() {
-    await renderAdminGallery();
-
-    if (profile?.role === "owner") {
-      await renderUsers();
-    }
-
-    buildContentEditor();
-    await loadPriceEditor();
-    await loadTranslationEditor();
-  }
-
-  function msg(text, error = false) {
-    const element =
-      $("#admin-message");
-
-    if (!element) {
-      return;
-    }
-
-    element.textContent = text;
-
-    element.style.color =
-      error ? "#b42318" : "";
-  }
-
-  /* =========================================================
-     LOGIN / SIGNUP / LOGOUT
-  ========================================================= */
-
-  const loginBtn =
-    $("#login-btn");
-
-  if (loginBtn) {
-    loginBtn.onclick =
-      async () => {
-        if (!sb) {
-          msg(
-            t("not_configured"),
-            true
-          );
-          return;
-        }
-
-        const email =
-          $("#auth-email")
-            ?.value
-            .trim();
-
-        const password =
-          $("#auth-password")
-            ?.value || "";
-
-        const {
+      if (error) {
+        console.error(
+          "Profile load error:",
           error
-        } = await sb.auth.signInWithPassword(
-          {
-            email,
-            password
-          }
         );
 
-        const authMessage =
-          $("#auth-message");
+        profile = null;
+        return;
+      }
 
-        if (authMessage) {
-          authMessage.textContent =
-            error
-              ? error.message
-              : t("saved");
-        }
-      };
+      profile = data || null;
+
+      updateAdminUI();
+
+    } catch (error) {
+      console.error(
+        "Profile error:",
+        error
+      );
+    }
   }
 
-  const signupBtn =
-    $("#signup-btn");
 
-  if (signupBtn) {
-    signupBtn.onclick =
-      async () => {
-        if (!sb) {
-          msg(
-            t("not_configured"),
-            true
-          );
-          return;
+  function updateAdminUI() {
+    const admin =
+      $("#admin");
+
+    const login =
+      $("#login");
+
+    if (admin) {
+      admin.hidden =
+        !session;
+    }
+
+    if (login) {
+      login.hidden =
+        !!session;
+    }
+  }
+
+
+  /* =========================================================
+     PUBLIC DATA
+  ========================================================= */
+
+  async function loadPublic() {
+    if (!sb) {
+      return;
+    }
+
+    try {
+
+      /* -----------------------------------------
+         SITE CONTENT
+      ----------------------------------------- */
+
+      try {
+        const { data, error } =
+          await sb
+            .from("site_content")
+            .select("*");
+
+        if (!error && data) {
+          /*
+            Keep existing application logic compatible
+            with whatever structure is already used.
+          */
+
+          window.WOND_SITE_CONTENT =
+            data;
         }
 
-        const email =
-          $("#auth-email")
-            ?.value
-            .trim();
+      } catch (error) {
+        console.warn(
+          "site_content:",
+          error
+        );
+      }
 
-        const password =
-          $("#auth-password")
-            ?.value || "";
 
-        const authMessage =
-          $("#auth-message");
+      /* -----------------------------------------
+         COUNTRIES
+      ----------------------------------------- */
+
+      const {
+        data: countryRows,
+        error: countryError
+      } = await sb
+        .from("countries")
+        .select("*")
+        .order("sort_order");
+
+      if (countryError) {
+        console.warn(
+          "countries:",
+          countryError
+        );
+
+        countries =
+          normalizeCountries(
+            window.WOND_COUNTRIES || []
+          );
+
+      } else {
+
+        countries =
+          normalizeCountries(
+            countryRows?.length
+              ? countryRows
+              : window.WOND_COUNTRIES || []
+          );
+      }
+
+
+      /* -----------------------------------------
+         COUNTRY TRANSLATIONS
+      ----------------------------------------- */
+
+      try {
+
+        const {
+          data: countryTranslations,
+          error
+        } = await sb
+          .from("country_translations")
+          .select("*");
 
         if (
-          !email ||
-          password.length < 8
+          !error &&
+          countryTranslations
         ) {
-          if (authMessage) {
-            authMessage.textContent =
-              "E-mail and password must be valid (minimum 8 characters).";
-          }
 
-          return;
+          window.WOND_COUNTRY_DB_TRANSLATIONS =
+            countryTranslations;
         }
 
-        const {
-          data,
+      } catch (error) {
+
+        console.warn(
+          "country_translations:",
           error
-        } = await sb.auth.signUp({
-          email,
-          password
-        });
-
-        if (error) {
-          if (authMessage) {
-            authMessage.textContent =
-              error.message;
-          }
-
-          return;
-        }
-
-        const {
-          data: claim
-        } = await sb.rpc(
-          "claim_owner"
-        );
-
-        if (authMessage) {
-          authMessage.textContent =
-            claim
-              ? "Owner created."
-              : "Account created. Confirm e-mail if required, then sign in.";
-        }
-      };
-  }
-
-  const logoutBtn =
-    $("#logout-btn");
-
-  if (logoutBtn) {
-    logoutBtn.onclick =
-      async () => {
-        if (sb) {
-          await sb.auth.signOut();
-        }
-
-        location.reload();
-      };
-  }
-
-  /* =========================================================
-     ADMIN TABS
-  ========================================================= */
-
-  $$(".admin-tabs button").forEach(
-    (button) => {
-      button.onclick = () => {
-        $$(".admin-tabs button")
-          .forEach((item) =>
-            item.classList.remove(
-              "active"
-            )
-          );
-
-        $$(".admin-tab")
-          .forEach(
-            (item) =>
-              (item.hidden = true)
-          );
-
-        button.classList.add(
-          "active"
-        );
-
-        const tab =
-          $("#" + button.dataset.tab);
-
-        if (tab) {
-          tab.hidden = false;
-        }
-      };
-    }
-  );
-
-  /* =========================================================
-     ADMIN GALLERY
-  ========================================================= */
-
-  async function renderAdminGallery() {
-    const {
-      data
-    } = await sb
-      .from("gallery_items")
-      .select("*")
-      .order("sort_order");
-
-    const box =
-      $("#admin-gallery-items");
-
-    if (!box) {
-      return;
-    }
-
-    box.innerHTML = "";
-
-    (data || []).forEach((item) => {
-      const row =
-        document.createElement("div");
-
-      row.className =
-        "admin-item";
-
-      row.innerHTML = `
-        <img
-          src="${esc(
-            sb.storage
-              .from(cfg.bucket)
-              .getPublicUrl(
-                item.storage_path
-              )
-              .data.publicUrl
-          )}"
-          alt=""
-        >
-
-        <div class="admin-item-body">
-          <strong>
-            ${esc(
-              item.title || "WOND"
-            )}
-          </strong>
-
-          <button
-            class="btn ghost dark"
-            data-id="${esc(item.id)}"
-            type="button"
-          >
-            ${esc(t("delete"))}
-          </button>
-        </div>
-      `;
-
-      const button =
-        row.querySelector(
-          "button"
-        );
-
-      button.onclick =
-        async () => {
-          await sb.storage
-            .from(cfg.bucket)
-            .remove([
-              item.storage_path
-            ]);
-
-          await sb
-            .from("gallery_items")
-            .delete()
-            .eq(
-              "id",
-              item.id
-            );
-
-          await renderAdminGallery();
-          await loadPublic();
-        };
-
-      box.append(row);
-    });
-  }
-
-  const uploadBtn =
-    $("#upload-btn");
-
-  if (uploadBtn) {
-    uploadBtn.onclick =
-      async () => {
-        const files = [
-          ...($("#photo-files")
-            ?.files || [])
-        ];
-
-        if (!files.length) {
-          msg(
-            t("select_files"),
-            true
-          );
-          return;
-        }
-
-        for (const file of files) {
-          const safeName =
-            file.name
-              .toLowerCase()
-              .replace(
-                /[^a-z0-9._-]+/gi,
-                "-"
-              );
-
-          const path =
-            `${crypto.randomUUID()}-${safeName}`;
-
-          const upload =
-            await sb.storage
-              .from(cfg.bucket)
-              .upload(
-                path,
-                file,
-                {
-                  upsert: false,
-                  contentType:
-                    file.type
-                }
-              );
-
-          if (upload.error) {
-            msg(
-              upload.error.message,
-              true
-            );
-            return;
-          }
-
-          const insert =
-            await sb
-              .from("gallery_items")
-              .insert({
-                storage_path:
-                  path,
-                title:
-                  $("#photo-title")
-                    ?.value
-                    .trim() ||
-                  file.name,
-                alt_text:
-                  $("#photo-alt")
-                    ?.value
-                    .trim() ||
-                  file.name,
-                sort_order:
-                  Date.now()
-              });
-
-          if (insert.error) {
-            msg(
-              insert.error.message,
-              true
-            );
-            return;
-          }
-        }
-
-        const filesInput =
-          $("#photo-files");
-
-        if (filesInput) {
-          filesInput.value = "";
-        }
-
-        msg(t("saved"));
-
-        await renderAdminGallery();
-        await loadPublic();
-      };
-  }
-
-  /* =========================================================
-     CONTENT EDITOR
-  ========================================================= */
-
-  function buildContentEditor() {
-    const select =
-      $("#content-lang");
-
-    if (!select) {
-      return;
-    }
-
-    if (!select.options.length) {
-      langs.forEach((language) => {
-        const option =
-          document.createElement(
-            "option"
-          );
-
-        option.value =
-          language;
-
-        option.textContent =
-          window.WOND_TRANSLATIONS
-            ?.[language]?.name ||
-          language;
-
-        select.append(option);
-      });
-    }
-
-    select.value = lang;
-
-    select.onchange = () =>
-      fillContent(
-        select.value
-      );
-
-    fillContent(
-      select.value
-    );
-  }
-
-  async function fillContent(language) {
-    const {
-      data
-    } = await sb
-      .from("site_content")
-      .select(
-        "content_key,content_value"
-      )
-      .eq(
-        "lang",
-        language
-      );
-
-    const map =
-      Object.fromEntries(
-        (data || []).map(
-          (item) => [
-            item.content_key,
-            item.content_value
-          ]
-        )
-      );
-
-    const box =
-      $("#content-editor");
-
-    if (!box) {
-      return;
-    }
-
-    box.innerHTML = "";
-
-    contentKeys.forEach((key) => {
-      const label =
-        document.createElement(
-          "label"
-        );
-
-      label.textContent = key;
-
-      const textarea =
-        document.createElement(
-          "textarea"
-        );
-
-      textarea.dataset.key =
-        key;
-
-      textarea.value =
-        map[key] ??
-        window.WOND_TRANSLATIONS
-          ?.[language]?.[key] ||
-        "";
-
-      label.append(textarea);
-      box.append(label);
-    });
-  }
-
-  const saveContentBtn =
-    $("#save-content");
-
-  if (saveContentBtn) {
-    saveContentBtn.onclick =
-      async () => {
-        const language =
-          $("#content-lang")
-            ?.value;
-
-        const rows =
-          $$("#content-editor textarea")
-            .map((textarea) => ({
-              lang: language,
-              content_key:
-                textarea.dataset.key,
-              content_value:
-                textarea.value,
-              updated_at:
-                new Date().toISOString()
-            }));
-
-        const {
-          error
-        } = await sb
-          .from("site_content")
-          .upsert(
-            rows,
-            {
-              onConflict:
-                "lang,content_key"
-            }
-          );
-
-        msg(
-          error
-            ? error.message
-            : t("saved"),
-          !!error
-        );
-
-        if (!error) {
-          rows.forEach((row) => {
-            if (
-              window.WOND_TRANSLATIONS
-                ?.[row.lang]
-            ) {
-              window.WOND_TRANSLATIONS[
-                row.lang
-              ][row.content_key] =
-                row.content_value;
-            }
-          });
-
-          if (language === lang) {
-            setLang(lang);
-          }
-        }
-      };
-  }
-
-  /* =========================================================
-     ADMIN PRICE COUNTRY
-  ========================================================= */
-
-  function buildCountryAdminSelect() {
-    const select =
-      $("#admin-price-country");
-
-    if (!select) {
-      return;
-    }
-
-    const current =
-      select.value || "CZ";
-
-    select.innerHTML = "";
-
-    countries.forEach((country) => {
-      const option =
-        document.createElement(
-          "option"
-        );
-
-      option.value =
-        country.code;
-
-      option.textContent =
-        `${countryName(
-          country.code
-        )} — ${country.currency}`;
-
-      select.append(option);
-    });
-
-    select.value =
-      countries.some(
-        (country) =>
-          country.code === current
-      )
-        ? current
-        : "CZ";
-
-    select.onchange = () =>
-      fillPriceEditor(
-        select.value
-      );
-  }
-
-  async function loadPriceEditor() {
-    buildCountryAdminSelect();
-
-    const select =
-      $("#admin-price-country");
-
-    if (select) {
-      await fillPriceEditor(
-        select.value
-      );
-    }
-  }
-
-  async function fillPriceEditor(
-    countryCode
-  ) {
-    const {
-      data
-    } = await sb
-      .from("country_prices")
-      .select(
-        "country_code,item_key,price,active"
-      )
-      .eq(
-        "country_code",
-        countryCode
-      );
-
-    const map =
-      Object.fromEntries(
-        (data || []).map(
-          (item) => [
-            item.item_key,
-            item
-          ]
-        )
-      );
-
-    const box =
-      $("#price-editor");
-
-    if (!box) {
-      return;
-    }
-
-    box.innerHTML = "";
-
-    const byCategory = {};
-
-    services.forEach((service) => {
-      byCategory[
-        service.category
-      ] ??= [];
-
-      byCategory[
-        service.category
-      ].push(service);
-    });
-
-    Object.entries(
-      byCategory
-    ).forEach(
-      ([category, rows]) => {
-        const heading =
-          document.createElement(
-            "h3"
-          );
-
-        heading.textContent =
-          categoryName(
-            category
-          );
-
-        box.append(heading);
-
-        rows.forEach(
-          (service) => {
-            const wrapper =
-              document.createElement(
-                "label"
-              );
-
-            wrapper.className =
-              "price-edit-row";
-
-            const title =
-              serviceName(
-                service.item_key,
-                service.default_name
-              );
-
-            const existing =
-              map[
-                service.item_key
-              ]?.price;
-
-            const fallback =
-              localPrices?.[
-                countryCode
-              ]?.[
-                service.item_key
-              ];
-
-            const value =
-              existing ??
-              fallback ??
-              0;
-
-            wrapper.innerHTML = `
-              <span>
-                ${esc(title)}
-                ${
-                  service.unit
-                    ? ` (${esc(
-                        service.unit
-                      )})`
-                    : ""
-                }
-              </span>
-
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                data-key="${esc(
-                  service.item_key
-                )}"
-                value="${esc(value)}"
-              >
-            `;
-
-            box.append(wrapper);
-          }
         );
       }
-    );
-  }
 
-  const savePricesBtn =
-    $("#save-prices");
 
-  if (savePricesBtn) {
-    savePricesBtn.onclick =
-      async () => {
-        const countryCode =
-          $("#admin-price-country")
-            ?.value;
+      /* -----------------------------------------
+         SERVICE ITEMS
+      ----------------------------------------- */
 
-        if (!countryCode) {
-          return;
-        }
-
-        const rows =
-          $$("#price-editor input")
-            .map((input) => ({
-              country_code:
-                countryCode,
-              item_key:
-                input.dataset.key,
-              price:
-                Number(input.value),
-              active: true,
-              updated_at:
-                new Date().toISOString()
-            }));
+      try {
 
         const {
+          data: serviceRows,
           error
         } = await sb
-          .from("country_prices")
-          .upsert(
-            rows,
-            {
-              onConflict:
-                "country_code,item_key"
-            }
-          );
+          .from("service_items")
+          .select("*")
+          .order("sort_order");
 
-        msg(
-          error
-            ? error.message
-            : t("saved"),
-          !!error
-        );
+        if (
+          !error &&
+          serviceRows?.length
+        ) {
 
-        if (!error) {
-          localPrices[
-            countryCode
-          ] ??= {};
-
-          rows.forEach((row) => {
-            localPrices[
-              countryCode
-            ][row.item_key] =
-              row.price;
-          });
-
-          renderPrices();
+          services =
+            serviceRows;
         }
-      };
-  }
 
-  /* =========================================================
-     SERVICE TRANSLATIONS
-  ========================================================= */
+      } catch (error) {
 
-  async function loadTranslationEditor() {
-    const select =
-      $("#translation-lang");
-
-    if (!select) {
-      return;
-    }
-
-    if (!select.options.length) {
-      langs.forEach((language) => {
-        const option =
-          document.createElement(
-            "option"
-          );
-
-        option.value =
-          language;
-
-        option.textContent =
-          window.WOND_TRANSLATIONS
-            ?.[language]?.name ||
-          language;
-
-        select.append(option);
-      });
-    }
-
-    select.value = lang;
-
-    select.onchange = () =>
-      fillTranslationEditor(
-        select.value
-      );
-
-    await fillTranslationEditor(
-      select.value
-    );
-  }
-
-  async function fillTranslationEditor(
-    language
-  ) {
-    const {
-      data
-    } = await sb
-      .from("service_translations")
-      .select(
-        "item_key,name"
-      )
-      .eq(
-        "lang",
-        language
-      );
-
-    const map =
-      Object.fromEntries(
-        (data || []).map(
-          (item) => [
-            item.item_key,
-            item.name
-          ]
-        )
-      );
-
-    const box =
-      $("#translation-editor");
-
-    if (!box) {
-      return;
-    }
-
-    box.innerHTML = "";
-
-    services.forEach((service) => {
-      const label =
-        document.createElement(
-          "label"
+        console.warn(
+          "service_items:",
+          error
         );
+      }
 
-      label.className =
-        "price-edit-row";
 
-      const currentName =
-        map[
-          service.item_key
-        ] ??
-        translations?.[
-          service.item_key
-        ]?.[language] ??
-        service.default_name ??
-        "";
+      /* -----------------------------------------
+         SERVICE TRANSLATIONS
+      ----------------------------------------- */
 
-      label.innerHTML = `
-        <span>
-          ${esc(
-            service.item_key
-          )}
-          —
-          ${esc(
-            categoryName(
-              service.category
-            )
-          )}
-        </span>
-
-        <input
-          type="text"
-          data-key="${esc(
-            service.item_key
-          )}"
-          value="${esc(
-            currentName
-          )}"
-        >
-      `;
-
-      box.append(label);
-    });
-  }
-
-  const saveTranslationsBtn =
-    $("#save-translations");
-
-  if (saveTranslationsBtn) {
-    saveTranslationsBtn.onclick =
-      async () => {
-        const language =
-          $("#translation-lang")
-            ?.value;
-
-        const rows =
-          $$("#translation-editor input")
-            .map((input) => ({
-              item_key:
-                input.dataset.key,
-              lang: language,
-              name:
-                input.value.trim()
-            }))
-            .filter(
-              (row) => row.name
-            );
+      try {
 
         const {
+          data: serviceTranslationRows,
           error
         } = await sb
           .from("service_translations")
-          .upsert(
-            rows,
-            {
-              onConflict:
-                "item_key,lang"
-            }
-          );
+          .select("*");
 
-        msg(
-          error
-            ? error.message
-            : t("saved"),
-          !!error
-        );
+        if (
+          !error &&
+          serviceTranslationRows
+        ) {
 
-        if (!error) {
+          const mapped = {};
+
+          serviceTranslationRows
+            .forEach((row) => {
+
+              const key =
+                row.item_key ||
+                row.service_key;
+
+              if (!key) {
+                return;
+              }
+
+              if (!mapped[key]) {
+                mapped[key] = {};
+              }
+
+              const language =
+                row.lang ||
+                row.language;
+
+              const value =
+                row.name ||
+                row.label ||
+                row.translation;
+
+              if (
+                language &&
+                value
+              ) {
+                mapped[key][language] =
+                  value;
+              }
+            });
+
           translations = {
-            ...translations
+            ...translations,
+            ...mapped
+          };
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "service_translations:",
+          error
+        );
+      }
+
+
+      /* -----------------------------------------
+         COUNTRY PRICES
+      ----------------------------------------- */
+
+      try {
+
+        const {
+          data: priceRows,
+          error
+        } = await sb
+          .from("country_prices")
+          .select("*");
+
+        if (
+          !error &&
+          priceRows
+        ) {
+
+          const mergedPrices = {
+            ...(window.WOND_LOCAL_PRICES || {})
           };
 
-          rows.forEach((row) => {
-            translations[
-              row.item_key
-            ] ??= {};
+          priceRows.forEach((row) => {
 
-            translations[
-              row.item_key
-            ][row.lang] =
-              row.name;
+            const countryCode =
+              String(
+                row.country_code ||
+                row.code ||
+                ""
+              )
+                .trim()
+                .toUpperCase();
+
+            const itemKey =
+              row.item_key ||
+              row.service_key;
+
+            if (
+              !countryCode ||
+              !itemKey
+            ) {
+              return;
+            }
+
+            if (
+              !mergedPrices[countryCode]
+            ) {
+              mergedPrices[
+                countryCode
+              ] = {};
+            }
+
+            const value =
+              Number(
+                row.price ??
+                row.amount ??
+                0
+              );
+
+            if (
+              Number.isFinite(value)
+            ) {
+              mergedPrices[
+                countryCode
+              ][itemKey] =
+                value;
+            }
           });
+
+          localPrices =
+            mergedPrices;
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "country_prices:",
+          error
+        );
+      }
+
+
+      /*
+        Re-render after all public data
+        has been loaded.
+      */
+
+      setLang(lang);
+
+      /*
+        Optional gallery loading if the
+        existing page has gallery logic.
+      */
+
+      if (
+        typeof window.WOND_LOAD_GALLERY ===
+        "function"
+      ) {
+        try {
+          await window.WOND_LOAD_GALLERY();
+        } catch (error) {
+          console.warn(
+            "Gallery:",
+            error
+          );
+        }
+      }
+
+    } catch (error) {
+
+      console.error(
+        "loadPublic error:",
+        error
+      );
+
+      countries =
+        normalizeCountries(
+          window.WOND_COUNTRIES || []
+        );
+
+      services =
+        window.WOND_PRICE_ITEMS || [];
+
+      translations =
+        window.WOND_PRICE_TRANSLATIONS || {};
+
+      localPrices =
+        window.WOND_LOCAL_PRICES || {};
+
+      setLang(lang);
+    }
+  }
+
+
+  /* =========================================================
+     EVENT LISTENERS
+  ========================================================= */
+
+  function bindEvents() {
+
+    /* -----------------------------------------
+       LANGUAGE
+    ----------------------------------------- */
+
+    const languageSelect =
+      $("#language");
+
+    if (languageSelect) {
+
+      languageSelect.value =
+        lang;
+
+      languageSelect.addEventListener(
+        "change",
+        (event) => {
+
+          setLang(
+            event.target.value
+          );
+        }
+      );
+    }
+
+
+    /* -----------------------------------------
+       COUNTRY
+    ----------------------------------------- */
+
+    const publicCountrySelect =
+      $("#price-country");
+
+    if (publicCountrySelect) {
+
+      publicCountrySelect.addEventListener(
+        "change",
+        (event) => {
+
+          const countryCode =
+            String(
+              event.target.value || "CZ"
+            )
+              .trim()
+              .toUpperCase();
+
+          localStorage.setItem(
+            "wond-country",
+            countryCode
+          );
 
           renderPrices();
         }
-      };
+      );
+    }
+
+
+    /* -----------------------------------------
+       VAT MODE
+    ----------------------------------------- */
+
+    const vatModeSelect =
+      $("#vat-mode");
+
+    if (vatModeSelect) {
+
+      const savedMode =
+        localStorage.getItem(
+          "wond-vat-mode"
+        );
+
+      if (
+        savedMode === "net" ||
+        savedMode === "gross" ||
+        savedMode === "both"
+      ) {
+        vatModeSelect.value =
+          savedMode;
+      }
+
+      vatModeSelect.addEventListener(
+        "change",
+        (event) => {
+
+          const mode =
+            event.target.value;
+
+          if (
+            mode === "net" ||
+            mode === "gross" ||
+            mode === "both"
+          ) {
+
+            localStorage.setItem(
+              "wond-vat-mode",
+              mode
+            );
+          }
+
+          renderPrices();
+        }
+      );
+    }
   }
 
+
   /* =========================================================
-     USERS
+     DEBUG HELPER
+     You can run in browser console:
+       WOND_DEBUG_VAT()
   ========================================================= */
 
-  async function renderUsers() {
-    const {
-      data
-    } = await sb
-      .from("profiles")
-      .select(
-        "id,email,role,created_at"
-      )
-      .order("created_at");
+  window.WOND_DEBUG_VAT = () => {
 
-    const box =
-      $("#users-list");
+    const code =
+      $("#price-country")?.value ||
+      "CZ";
 
-    if (!box) {
+    const country =
+      countries.find(
+        (item) => item.code === code
+      );
+
+    const vat =
+      getVatRate(country);
+
+    console.table({
+      country: code,
+      currency: country?.currency,
+      vatRate: vat,
+      vatPercent:
+        `${Math.round(vat * 100)}%`,
+      exampleNet: 450,
+      exampleGross:
+        calculateGross(450, vat)
+    });
+
+    return {
+      country,
+      vatRate: vat,
+      gross:
+        calculateGross(
+          450,
+          vat
+        )
+    };
+  };
+
+
+  /* =========================================================
+     INIT
+  ========================================================= */
+
+  async function init() {
+
+    /*
+      First render using static data.
+      This means prices work even before
+      Supabase finishes loading.
+    */
+
+    countries =
+      normalizeCountries(
+        window.WOND_COUNTRIES || []
+      );
+
+    services =
+      window.WOND_PRICE_ITEMS || [];
+
+    translations =
+      window.WOND_PRICE_TRANSLATIONS || {};
+
+    localPrices =
+      window.WOND_LOCAL_PRICES || {};
+
+
+    bindEvents();
+
+    setLang(lang);
+
+
+    /* -----------------------------------------
+       SUPABASE NOT CONFIGURED
+    ----------------------------------------- */
+
+    if (!sb) {
+
+      const warning =
+        $("#admin-config-warning");
+
+      if (warning) {
+
+        warning.hidden = false;
+
+        warning.textContent =
+          t(
+            "not_configured",
+            "Supabase není nakonfigurováno."
+          );
+      }
+
       return;
     }
 
-    box.innerHTML = "";
 
-    (data || []).forEach((user) => {
-      const row =
-        document.createElement(
-          "div"
-        );
+    /* -----------------------------------------
+       SESSION
+    ----------------------------------------- */
 
-      row.className =
-        "admin-item";
+    try {
 
-      row.innerHTML = `
-        <div class="admin-item-body">
-          <strong>
-            ${esc(user.email)}
-          </strong>
+      const {
+        data: {
+          session: currentSession
+        }
+      } = await sb.auth.getSession();
 
-          <span class="muted">
-            ${esc(user.role)}
-          </span>
-        </div>
-      `;
+      session =
+        currentSession;
 
-      if (
-        user.role !== "owner"
-      ) {
-        const button =
-          document.createElement(
-            "button"
-          );
-
-        button.className =
-          "btn ghost dark";
-
-        button.type = "button";
-
-        button.textContent =
-          t("delete");
-
-        button.onclick =
-          async () => {
-            const result =
-              await sb.functions.invoke(
-                "delete-admin",
-                {
-                  body: {
-                    user_id:
-                      user.id
-                  }
-                }
-              );
-
-            msg(
-              result.error
-                ? result.error.message
-                : t("saved"),
-              !!result.error
-            );
-
-            await renderUsers();
-          };
-
-        row
-          .querySelector(
-            ".admin-item-body"
-          )
-          ?.append(button);
+      if (session) {
+        await loadProfile();
       }
 
-      box.append(row);
-    });
-  }
+      sb.auth.onAuthStateChange(
+        (_event, currentSession) => {
 
-  const addAdminBtn =
-    $("#add-admin");
+          session =
+            currentSession;
 
-  if (addAdminBtn) {
-    addAdminBtn.onclick =
-      async () => {
-        const email =
-          $("#new-admin-email")
-            ?.value
-            .trim();
-
-        const password =
-          $("#new-admin-password")
-            ?.value || "";
-
-        if (
-          !email ||
-          password.length < 8
-        ) {
-          msg(
-            "Enter e-mail and a password of at least 8 characters.",
-            true
+          setTimeout(
+            () => {
+              loadProfile();
+            },
+            0
           );
-
-          return;
         }
+      );
 
-        const result =
-          await sb.functions.invoke(
-            "create-admin",
-            {
-              body: {
-                email,
-                password
-              }
-            }
-          );
+    } catch (error) {
 
-        msg(
-          result.error
-            ? result.error.message
-            : t("saved"),
-          !!result.error
-        );
+      console.error(
+        "Auth:",
+        error
+      );
+    }
 
-        if (!result.error) {
-          $("#new-admin-email").value =
-            "";
 
-          $("#new-admin-password").value =
-            "";
+    /* -----------------------------------------
+       LOAD PUBLIC DATA
+    ----------------------------------------- */
 
-          await renderUsers();
-        }
-      };
+    await loadPublic();
   }
 
-  /* =========================================================
-     HTML ESCAPE
-  ========================================================= */
-
-  function esc(value) {
-    return String(
-      value ?? ""
-    ).replace(
-      /[&<>"']/g,
-      (char) =>
-        ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-        }[char])
-    );
-  }
 
   /* =========================================================
      START
   ========================================================= */
 
-  init();
+  if (
+    document.readyState ===
+    "loading"
+  ) {
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      init
+    );
+
+  } else {
+
+    init();
+  }
+
 })();
