@@ -1,68 +1,44 @@
-# WOND — multilingual production site + real admin
+# WOND — multilingual site with country-specific pricing
 
-Цей репозиторій зроблений як **звичайний статичний сайт без build step**. Його можна завантажити прямо в GitHub repository і опублікувати через GitHub Pages або Netlify.
+Static frontend + Supabase backend. No build step is required.
 
-## 1. Публічна частина
+## What was changed
 
-- 12 мов: `uk cs sl sk de en hr sr it hu pl ro`
-- перемикач мови;
-- мова зберігається в URL як `?lang=xx` і в браузері;
-- адаптивний дизайн;
-- галерея;
-- ціни;
-- контактні дані;
-- без паролів або адмінських даних у frontend-коді.
+- 12 languages: `uk cs sl sk de en hr sr it hu pl ro`.
+- Country selector controls the price list.
+- **Prices are stored separately per country**; the browser no longer converts a Czech price into another currency at runtime.
+- 10 country price books are seeded: CZ/CZK, UA/UAH, SI/EUR, SK/EUR, DE/EUR, PL/PLN, RO/RON, HU/HUF, HR/EUR, GB/GBP.
+- Every service has a translation for all 12 languages.
+- Admin has a country-specific price editor and a service-translation editor.
+- VAT rates are stored per country only for the optional “with VAT” display.
+- Gallery, texts, administrators and authentication remain backed by Supabase.
 
-## 2. Справжня адмінка
+## Supabase
 
-Для постійного збереження використовується Supabase:
-
-- Supabase Auth — логін/пароль;
-- PostgreSQL — тексти, ціни, ролі, галерея;
-- Storage — фотографії;
-- RLS — доступ до даних;
-- Edge Functions — створення/видалення адміністраторів без service-role key у браузері.
-
-### Налаштування Supabase
-
-1. Створи проєкт у Supabase.
-2. Відкрий SQL Editor.
-3. Запусти весь файл `supabase-schema.sql`.
-4. У `supabase-config.js` встав:
-   - Project URL;
-   - anon/public key.
-5. У Supabase Authentication налаштуй Email/Password.
-6. Задеплой Edge Functions:
+1. Create a Supabase project.
+2. Run **all of `supabase-schema.sql`** in SQL Editor. It creates/updates the tables, RLS policies and initial country/service/price data.
+3. Put the Supabase Project URL and anon/public key into `supabase-config.js`. Do not put the service-role key in the frontend.
+4. Deploy the two Edge Functions:
 
 ```bash
 supabase functions deploy create-admin
 supabase functions deploy delete-admin
 ```
 
-Service role key **не вставляється** у `supabase-config.js`.
+The functions need the Supabase service-role secret configured in the Supabase project; it is never committed to this repository.
 
-## 3. Перший Owner
+## First Owner
 
-На сайті відкрий `Admin`, введи свій e-mail і пароль та натисни **Create Owner**.
+Open `#admin`, enter an e-mail and password, then use **Create Owner**. If e-mail confirmation is enabled, confirm the account and sign in. The database function allows only the first account to claim the Owner role.
 
-Якщо в Supabase увімкнене підтвердження e-mail, спочатку підтвердь e-mail, потім увійди. Під час входу сайт намагається безпечно виконати `claim_owner()`; Owner може бути лише один.
+## Country-specific prices
 
-Після цього Owner може:
+The initial values are seeded from the project's previous price ratios so the site has a complete starting price list. They are now independent records. Change them in **Admin → Prices → country**. Changing Czechia does not change Ukraine, Germany, Poland, etc.
 
-- завантажувати/видаляти фотографії;
-- редагувати тексти кожної мови;
-- редагувати ціни;
-- створювати адміністраторів;
-- видаляти адміністраторів.
+## GitHub Pages
 
-## 4. GitHub Pages
+Upload the repository contents with `index.html` at the repository root. Then enable GitHub Pages from the `main` branch/root.
 
-У repository поклади **вміст цієї папки в root**, щоб `index.html` лежав у корені.
+## Domain
 
-Потім GitHub → Settings → Pages → Deploy from branch → `main` / root.
-
-`index.html` не потребує npm, Node або build-команди.
-
-## 5. Важливо
-
-Без Supabase сайт все одно відкривається як звичайний публічний сайт. Адмінка покаже повідомлення, що backend не налаштований. Після вставлення URL + anon key вона підключається до реального backend.
+The `vwond.eu` domain can point to the published GitHub Pages/Netlify site through DNS at your domain registrar. The domain itself does not replace Supabase; it is the public address of the frontend.
