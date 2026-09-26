@@ -1,0 +1,5 @@
+window.WOND_SUPABASE={
+  url:'PASTE_YOUR_SUPABASE_PROJECT_URL_HERE',
+  anonKey:'PASTE_YOUR_SUPABASE_ANON_KEY_HERE',
+  bucket:'wond-gallery'
+};
