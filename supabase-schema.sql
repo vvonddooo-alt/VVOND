@@ -1210,3 +1210,5 @@ insert into public.country_prices(country_code,item_key,price,active) values("GB
 insert into public.country_prices(country_code,item_key,price,active) values("GB","visual",31.5,true) on conflict(country_code,item_key) do update set price=excluded.price,active=true;
 insert into public.country_prices(country_code,item_key,price,active) values("GB","report",0,true) on conflict(country_code,item_key) do update set price=excluded.price,active=true;
 insert into public.country_prices(country_code,item_key,price,active) values("GB","travel50",17.5,true) on conflict(country_code,item_key) do update set price=excluded.price,active=true;
+supabase functions deploy create-admin
+supabase functions deploy delete-admin
