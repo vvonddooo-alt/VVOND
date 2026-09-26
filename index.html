@@ -1,107 +1,158 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-i18n="meta_title">WOND — Elektro & Voda</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WOND — Elektro & Voda</title>
 <meta name="description" content="Wond-elektro — elektroinstalace, vodovod, topení, ALUPEX a montážní práce.">
-<link rel="stylesheet" href="style.css">
+<style>
+  :root {
+    --primary: #0052cc;
+    --primary-hover: #0040a3;
+    --dark: #172033;
+    --light: #f3f6fa;
+    --border: #e2e8f0;
+    --text: #334155;
+    --muted: #64748b;
+  }
+  body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; color: var(--text); background: #fff; line-height: 1.5; }
+  a { text-decoration: none; color: inherit; }
+  .section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+  .section-lead { font-size: 1.1rem; color: var(--muted); margin-bottom: 40px; }
+  
+  /* Header & Nav */
+  .hero { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding-bottom: 60px; }
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 20px; max-width: 1200px; margin: 0 auto; }
+  .logo { font-weight: 700; font-size: 1.5rem; color: var(--dark); }
+  .logo span { color: var(--primary); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .links { display: flex; gap: 20px; align-items: center; }
+  .admin-link { font-size: 0.85rem; padding: 4px 8px; background: var(--border); border-radius: 4px; }
+  .language select { padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; }
+  
+  /* Hero Content */
+  .hero-content { max-width: 800px; margin: 60px auto 0; text-align: center; padding: 0 20px; }
+  .eyebrow { font-weight: 700; letter-spacing: 2px; color: var(--primary); font-size: 0.9rem; margin-bottom: 10px; }
+  h1 { font-size: 3rem; color: var(--dark); margin: 0 0 20px; line-height: 1.2; }
+  h1 span { color: var(--primary); }
+  .lead { font-size: 1.25rem; color: var(--text); margin-bottom: 30px; }
+  .actions { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+  .btn { padding: 12px 28px; border-radius: 8px; font-weight: 600; display: inline-block; transition: 0.2s; }
+  .btn.primary { background: var(--primary); color: white; }
+  .btn.primary:hover { background: var(--primary-hover); }
+  .btn.ghost { border: 2px solid var(--primary); color: var(--primary); }
+  .btn.ghost:hover { background: var(--primary); color: white; }
+  .hero-business-card img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+  /* Services Grid */
+  .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+  .service-grid article { padding: 30px; background: var(--light); border-radius: 12px; border: 1px solid var(--border); }
+  .service-grid .icon { font-size: 2.5rem; margin-bottom: 15px; }
+  .service-grid h3 { margin: 0 0 10px 0; color: var(--dark); }
+
+  /* Company */
+  .company-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .company-card { padding: 30px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+  .profile-card { display: flex; gap: 20px; background: var(--light); }
+  .profile-avatar { width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+  .kicker { font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: bold; }
+  .muted { color: var(--muted); font-size: 0.9rem; }
+  .company-card h3 { margin-top: 0; color: var(--dark); }
+  .company-card ul, .company-card ol { padding-left: 20px; margin: 0; }
+  .company-card li { margin-bottom: 8px; }
+
+  /* Gallery Section */
+  .gallery-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+  .filter-btn { padding: 8px 16px; border: 1px solid var(--border); background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; font-weight: 500; }
+  .filter-btn.active, .filter-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .gallery-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; cursor: pointer; background: var(--light); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .gallery-item:hover img { transform: scale(1.05); }
+  .gallery-desc { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 15px; font-size: 0.95rem; opacity: 0; transition: opacity 0.3s; }
+  .gallery-item:hover .gallery-desc { opacity: 1; }
+
+  /* Lightbox */
+  .lightbox { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; justify-content:center; align-items:center; }
+  .lightbox img { max-width: 90%; max-height: 80%; border-radius: 8px; }
+  .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; }
+
+  /* Price Controls & Table */
+  .notice { padding: 15px; background: #e0f2fe; border-left: 4px solid var(--primary); border-radius: 4px; margin-bottom: 25px; }
+  .price-controls { display: flex; gap: 15px; flex-wrap: wrap; padding: 20px; background: var(--light); border-radius: 12px; margin-bottom: 30px; align-items: center; }
+  .price-controls label { font-weight: 600; display: flex; flex-direction: column; gap: 5px; font-size: 0.9rem; }
+  .price-controls select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: white; min-width: 150px; }
+  .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+  .price-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+  .price-card h3 { margin-top: 0; border-bottom: 2px solid var(--light); padding-bottom: 10px; color: var(--dark); }
+  table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+  th { padding: 10px; background: var(--light); font-weight: 600; color: var(--dark); }
+  td { padding: 10px; border-bottom: 1px solid var(--light); }
+  td:last-child { font-weight: bold; text-align: right; color: var(--primary); }
+
+  @media (max-width: 768px) {
+    .links { display: none; } /* Спрощено для мобільних */
+    h1 { font-size: 2rem; }
+    .price-controls { flex-direction: column; align-items: stretch; }
+  }
+</style>
 </head>
 <body>
+
 <header class="hero">
-<nav class="nav"><a class="logo" href="#">WOND<span>elektro</span></a>
-<div class="nav-right">
-<div class="links">
-  <a href="#services" data-i18n="nav_services">Služby</a>
-  <a href="#prices" data-i18n="nav_prices">Ceník</a>
-  <a href="#gallery" data-i18n="nav_gallery">Galerie</a>
-  <a href="#company" data-i18n="nav_company">Firma</a>
-  <a href="#contact" data-i18n="nav_contact">Kontakt</a>
-  <a href="#admin-login" class="admin-link">Admin</a>
-</div>
-<label class="language"><span>🌐</span><select id="language" aria-label="Language selector"></select></label></div></nav>
-<div class="hero-content"><p class="eyebrow" data-i18n="eyebrow">ELEKTRO · VODA · MONTÁŽE</p>
-<h1 data-i18n="hero_title">Spolehlivá řešení.<br><span>Kvalitní práce.</span></h1>
-<p class="lead" data-i18n="hero_text">Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.</p>
-<div class="actions"><a class="btn primary" href="tel:+38640746946" data-i18n="call">Zavolat</a><a class="btn ghost" href="#prices" data-i18n="show_prices">Zobrazit ceník</a></div><div class="hero-business-card"><img src="images/business-card.png" alt="Vizitka WOND"></div></div>
+  <nav class="nav">
+    <a class="logo" href="#">WOND<span>elektro</span></a>
+    <div class="nav-right">
+      <div class="links">
+        <a href="#services" data-i18n="nav_services">Služby</a>
+        <a href="#prices" data-i18n="nav_prices">Ceník</a>
+        <a href="#gallery" data-i18n="nav_gallery">Galerie</a>
+        <a href="#company" data-i18n="nav_company">Firma</a>
+        <a href="#contact" data-i18n="nav_contact">Kontakt</a>
+        <a href="#admin-login" class="admin-link">Admin</a>
+      </div>
+      <label class="language"><span>🌐 </span><select id="language" aria-label="Language selector"></select></label>
+    </div>
+  </nav>
+  
+  <div class="hero-content">
+    <p class="eyebrow" data-i18n="eyebrow">ELEKTRO · VODA · MONTÁŽE</p>
+    <h1 data-i18n="hero_title">Spolehlivá řešení.<br><span>Kvalitní práce.</span></h1>
+    <p class="lead" data-i18n="hero_text">Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.</p>
+    <div class="actions">
+      <a class="btn primary" href="tel:+38640746946" data-i18n="call">Zavolat</a>
+      <a class="btn ghost" href="#prices" data-i18n="show_prices">Zobrazit ceník</a>
+    </div>
+    <div class="hero-business-card"><img src="images/business-card.png" alt="Vizitka WOND"></div>
+  </div>
 </header>
+
 <main>
-<section id="services" class="section"><h2 data-i18n="services_title">Naše služby</h2><p class="section-lead" data-i18n="services_lead">Profesionální elektroinstalační, instalatérské a montážní práce.</p>
-<div class="service-grid">
-<article><div class="icon">⚡</div><h3 data-i18n="electro">Elektroinstalace</h3><p data-i18n="electro_text">Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.</p></article>
-<article><div class="icon">💧</div><h3 data-i18n="water">Vodovod a instalatérské práce</h3><p data-i18n="water_text">Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.</p></article>
-<article><div class="icon">🛠️</div><h3 data-i18n="assembly">Montáž a demontáž</h3><p data-i18n="assembly_text">Různé montážní práce, rekonstrukce, opravy a údržba.</p></article>
-<article><div class="icon">🏠</div><h3 data-i18n="building">Drobné stavební práce</h3><p data-i18n="building_text">Renovace, opravy, sádrokarton a individuální práce.</p></article>
-</div></section>
-<section id="company" class="section company-section"><h2 data-i18n="company_title">O společnosti</h2><p class="section-lead" data-i18n="company_lead">WOND poskytuje elektroinstalační, vodoinstalatérské a montážní služby pro domácnosti, firmy, developery i stavební projekty. Máme více než 10 let zkušeností v oboru.</p>
-<div class="company-grid"><article class="company-card profile-card"><div class="profile-avatar">W</div><div><span class="kicker" data-i18n="management">Vedení společnosti</span><h3 data-i18n="director_name">Vasyl Yarema</h3><p data-i18n="director_role">Ředitel společnosti</p><p class="muted" data-i18n="director_text">Koordinace zakázek, komunikace se zákazníky, technické řešení a dohled nad realizací.</p></div></article><article class="company-card"><h3 data-i18n="why_title">Proč WOND</h3><ul><li data-i18n="why_1">Individuální přístup ke každé zakázce</li><li data-i18n="why_2">Transparentní cenová nabídka</li><li data-i18n="why_3">Důraz na bezpečnost a čistou práci</li><li data-i18n="why_4">Koordinace elektro, vody a montáží</li><li data-i18n="why_5">Působnost v Česku i Slovinsku</li></ul></article><article class="company-card"><h3 data-i18n="process_title">Jak probíhá spolupráce</h3><ol><li data-i18n="process_1">Kontakt a popis požadavku</li><li data-i18n="process_2">Domluva termínu a rozsahu</li><li data-i18n="process_3">Cenová nabídka</li><li data-i18n="process_4">Realizace a předání práce</li></ol></article></div></section>
-<section id="prices" class="section price-section"><h2 data-i18n="prices_title">Kompletní ceník služeb</h2><p class="section-lead" data-i18n="prices_lead">Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.</p>
-<div class="notice"><b data-i18n="notice">Výjezd na místo do 50 km: 500 Kč</b><br><span data-i18n="area">Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.</span></div>
-<div class="price-controls" style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;padding:18px;background:#f3f6fa;border-radius:12px;color:#172033"><label>Country / Země <select id="price-country"><option value="CZ">Česko</option><option value="SI">Slovenija</option><option value="SK">Slovensko</option><option value="UA">Україна</option><option value="DE">Deutschland</option><option value="PL">Polska</option><option value="RO">România</option><option value="HU">Magyarország</option><option value="HR">Hrvatska</option><option value="GB">United Kingdom</option></select></label><label>City / Město <select id="price-city"></select></label><label>Prices <select id="vat-mode"><option value="net">Without VAT / Bez DPH</option><option value="gross">With VAT / Včetně DPH</option><option value="both">Both / Obojí</option></select></label><p id="price-note" style="width:100%;margin:0;font-size:13px">Indicative converted prices; confirm local rates before publishing.</p></div>
-<div class="price-grid">
-<div class="price-card"><h3 data-i18n="cat_electro">Elektroinstalace</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody>
-<tr><td data-i18n="el_point">Elektro bod (zásuvka / stikalo)</td><td>450 Kč</td></tr>
-<tr><td data-i18n="el_point_next">Další elektro bod</td><td>350 Kč</td></tr>
-<tr><td data-i18n="light_point">Světelný bod</td><td>350 Kč</td></tr>
-<tr><td data-i18n="pipe_kabel">Uložení kabelu v trubce</td><td>90 Kč/m</td></tr>
-<tr><td data-i18n="groove_cut">Sekání a zapravení drážek</td><td>220 Kč/m</td></tr>
-<tr><td data-i18n="sw_single">Jednoduchý vypínač</td><td>300 Kč</td></tr>
-<tr><td data-i18n="sw_double">Dvojitý vypínač</td><td>400 Kč</td></tr>
-<tr><td data-i18n="sock_single">Jednoduchá zásuvka</td><td>300 Kč</td></tr>
-<tr><td data-i18n="sock_double">Dvojitá zásuvka</td><td>400 Kč</td></tr>
-<tr><td data-i18n="sock_usb">USB zásuvka</td><td>450 Kč</td></tr>
-<tr><td data-i18n="sock_rj45">RJ45 zásuvka</td><td>400 Kč</td></tr>
-<tr><td data-i18n="sock_tv">TV zásuvka</td><td>400 Kč</td></tr>
-<tr><td data-i18n="light_inst">Montáž svítidla</td><td>400 Kč</td></tr>
-<tr><td data-i18n="light_led">LED svítidlo</td><td>450 Kč</td></tr>
-<tr><td data-i18n="dimmer">Stmívač</td><td>450 Kč</td></tr>
-</tbody></table></div>
-<div class="price-card"><h3 data-i18n="cat_water">Vodovod a kanalizace</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody>
-<tr><td data-i18n="w_ppr">PPR potrubí</td><td>180 Kč/m</td></tr>
-<tr><td data-i18n="w_alupex">ALUPEX potrubí</td><td>220 Kč/m</td></tr>
-<tr><td data-i18n="w_sewer">Kanalizační potrubí</td><td>250 Kč/m</td></tr>
-<tr><td data-i18n="w_point_single">Vodní bod teplá + studená</td><td>650 Kč</td></tr>
-<tr><td data-i18n="w_point_double">Dvojitý vodní bod</td><td>1 100 Kč</td></tr>
-<tr><td data-i18n="w_wm">Přípojka pro pračku</td><td>750 Kč</td></tr>
-<tr><td data-i18n="w_dw">Přípojka pro myčku</td><td>750 Kč</td></tr>
-<tr><td data-i18n="w_boiler_conn">Přípojka pro bojler</td><td>1 000 Kč</td></tr>
-<tr><td data-i18n="w_boiler_inst1">Montáž bojleru do 100 l</td><td>2 000 Kč</td></tr>
-<tr><td data-i18n="w_boiler_inst2">Montáž bojleru 100–200 l</td><td>2 800 Kč</td></tr>
-<tr><td data-i18n="w_sanitary">Montáž sanitárního vybavení</td><td>750 Kč</td></tr>
-<tr><td data-i18n="w_distr">Rozdělovač</td><td>2 000 Kč</td></tr>
-<tr><td data-i18n="w_filter">Vodní filtr</td><td>700 Kč</td></tr>
-<tr><td data-i18n="w_valve">Redukční ventil</td><td>1 000 Kč</td></tr>
-</tbody></table></div>
-<div class="price-card"><h3 data-i18n="cat_boards">Elektrické rozvaděče a ochrany</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody>
-<tr><td data-i18n="b_24">Rozvaděč 24 modulů</td><td>11 000 Kč</td></tr>
-<tr><td data-i18n="b_36">Rozvaděč 36 modulů</td><td>14 000 Kč</td></tr>
-<tr><td data-i18n="b_48">Rozvaděč 48 modulů</td><td>18 000 Kč</td></tr>
-<tr><td data-i18n="b_72">Rozvaděč 72 modulů</td><td>25 000 Kč</td></tr>
-<tr><td data-i18n="b_spd">Přepěťová ochrana SPD typ 2</td><td>2 800 Kč</td></tr>
-<tr><td data-i18n="b_rele">Relé / ochrana napětí</td><td>2 800 Kč</td></tr>
-<tr><td data-i18n="b_breaker">Jistič</td><td>350 Kč</td></tr>
-<tr><td data-i18n="b_rcd">Proudový chránič FI/RCD</td><td>1 400 Kč</td></tr>
-<tr><td data-i18n="b_rcbo">RCBO kombinace</td><td>1 300 Kč</td></tr>
-</tbody></table></div>
-<div class="price-card"><h3 data-i18n="cat_rev">Kontroly / revize</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody>
-<tr><td data-i18n="rev_base">Základní kontrola elektroinstalace</td><td>1 200 Kč</td></tr>
-</tbody></table></div>
-</div></section></main>
+  <!-- Services -->
+  <section id="services" class="section">
+    <h2 data-i18n="services_title">Naše služby</h2>
+    <p class="section-lead" data-i18n="services_lead">Profesionální elektroinstalační, instalatérské a montážní práce.</p>
+    <div class="service-grid">
+      <article><div class="icon">⚡</div><h3 data-i18n="electro">Elektroinstalace</h3><p data-i18n="electro_text">Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.</p></article>
+      <article><div class="icon">💧</div><h3 data-i18n="water">Vodovod a instalatérské práce</h3><p data-i18n="water_text">Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.</p></article>
+      <article><div class="icon">🛠️</div><h3 data-i18n="assembly">Montáž a demontáž</h3><p data-i18n="assembly_text">Různé montážní práce, rekonstrukce, opravy a údržba.</p></article>
+      <article><div class="icon">🏠</div><h3 data-i18n="building">Drobné stavební práce</h3><p data-i18n="building_text">Renovace, opravy, sádrokarton a individuální práce.</p></article>
+    </div>
+  </section>
 
-<script>
-const languages = {
-  cs: { name: 'Čeština', code: 'CS' },
-  uk: { name: 'Українська', code: 'UA' },
-  sl: { name: 'Slovenščina', code: 'SI' },
-  sk: { name: 'Slovenčina', code: 'SK' },
-  de: { name: 'Deutsch', code: 'DE' },
-  en: { name: 'English', code: 'GB' },
-  pl: { name: 'Polski', code: 'PL' },
-  ro: { name: 'Română', code: 'RO' },
-  hu: { name: 'Magyar', code: 'HU' },
-  hr: { name: 'Hrvatski', code: 'HR' }
-};
+  <!-- Gallery Section -->
+  <section id="gallery" class="section">
+    <h2 data-i18n="nav_gallery">Galerie</h2>
+    <p class="section-lead" data-i18n="gallery_lead">Ukázky naší realizované práce v terénu.</p>
+    
+    <div class="gallery-filters">
+      <button class="filter-btn active" data-filter="all" data-i18n="filter_all">Vše</button>
+      <button class="filter-btn" data-filter="electro" data-i18n="electro">Elektroinstalace</button>
+      <button class="filter-btn" data-filter="water" data-i18n="water">Vodovod</button>
+    </div>
 
-const translations = {
-  cs: {
-    meta_title: "WOND — Elektro & Voda",
-    nav_services: "Služby", nav_prices: "Ceník", nav_gallery: "Galerie", nav_company: "Firma", nav_contact: "Kontakt",
+    <div class="gallery-grid">
+      <!-- Картка 1: Електро -->
+      <div class="gallery-item" data-category="electro" onclick="openLightbox(this)">
+        <img src="images/gallery-electro-1.jpg" alt="Rozvaděч">
+        <div class="gallery-desc" data-i18n="g_desc_1">Montáž a zapojení elektrického rozvaděče</div>
