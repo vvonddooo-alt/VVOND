@@ -3,71 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VVOND - Рішення для Бізнесу</title>
+    <title>WOND — Електромонтаж та Сантехніка Брно</title>
+    <link rel="alternate" hreflang="cs" href="http://vvond.eu" />
+    <link rel="alternate" hreflang="uk" href="http://vvond.eu" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">VVOND</div>
-            <nav>
-                <a href="#about">Про нас</a>
-                <a href="#services">Послуги</a>
-                <a href="#prices">Ціни</a>
-                <a href="#contact">Контакти</a>
-            </nav>
-            <div class="lang-switch">
-                <a href="index.html">EN</a>
-                <a href="index_cz.html">CZ</a>
-                <a href="index_ua.html" class="active">UA</a>
-            </div>
+    <header class="navbar">
+        <div class="logo">WOND</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#services">Послуги</a></li>
+                <li><a href="#prices">Ціни</a></li>
+                <li><a href="#contact">Контакти</a></li>
+            </ul>
+        </nav>
+        <div class="lang-switcher">
+            <a href="index_cz.html" class="lang-btn">CZ</a>
+            <a href="index_ua.html" class="lang-btn active">UA</a>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <h1>Інноваційні рішення для вашого бізнесу</h1>
-            <p>Ми поєднуємо сучасні технології з реальними результатами. Розвивайте свій потенціал разом із VVOND.</p>
-            <a href="#contact" class="btn">Зв'язатися з нами</a>
+    <section class="hero" id="services">
+        <h1>Надійні рішення. Якісна робота.</h1>
+        <p>Електромонтаж, водопровід, опалення, ALUPEX та монтажні роботи для приватних осіб, фірм та будівництва в Брно та околицях.</p>
+        <div style="margin-top: 2rem;">
+            <a href="tel:+38640746946" class="cta-btn" style="background: #0070f3; color: white; margin-right: 1rem;">Зателефонувати</a>
+            <a href="#prices" class="cta-btn">Переглянути ціни</a>
         </div>
     </section>
 
-    <section id="about" class="about">
-        <div class="container">
-            <h2>Про нас</h2>
-            <p>VVOND — це надійний партнер у сфері цифрової трансформації, автоматизації процесів та побудови надійних хмарних архітектур. Ми допомагаємо динамічним командам створювати стабільні проекти з глобальним охопленням.</p>
+    <section class="prices-section" id="prices" style="padding: 3rem 2rem; max-width: 900px; margin: 0 auto;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Повний прайс-лист послуг</h2>
+        <p style="color: var(--gray); text-align: center; margin-bottom: 2.5rem;">Регіон роботи: Брно, Кужім, Росіце, Іванчіце, Жидлоховіце, Бланско, Вишков та околиці. <br><strong>Виїзд на об'єкт до 50 км: 500 Kč</strong></p>
+
+        <!-- Категорія 1 -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">⚡ Електромонтажні роботи</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Послуга</th><th style="text-align: right; padding: 0.75rem 0;">Ціна без ПДВ</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Електроточка (розетка / вимикач)</td><td style="text-align: right; font-weight: 600;">450 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Додаткова електроточка</td><td style="text-align: right; font-weight: 600;">350 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Точка освітлення</td><td style="text-align: right; font-weight: 600;">350 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Укладання кабелю в гофрі/трубі</td><td style="text-align: right; font-weight: 600;">90 Kč/м</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Штроблення та закладення каналів</td><td style="text-align: right; font-weight: 600;">220 Kč/м</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Одинарний вимикач / розетка</td><td style="text-align: right; font-weight: 600;">300 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Подвійний вимикач / розетка</td><td style="text-align: right; font-weight: 600;">400 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">USB / RJ45 / TV розетка</td><td style="text-align: right; font-weight: 600;">450 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Монтаж світильника / LED стрічки</td><td style="text-align: right; font-weight: 600;">400 Kč</td></tr>
+            </table>
+        </div>
+
+        <!-- Категорія 2 -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">💧 Водопровід та каналізація</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Послуга</th><th style="text-align: right; padding: 0.75rem 0;">Ціна без ПДВ</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Трубопровід PPR</td><td style="text-align: right; font-weight: 600;">180 Kč/м</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Трубопровід ALUPEX</td><td style="text-align: right; font-weight: 600;">220 Kč/м</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Каналізаційні труби</td><td style="text-align: right; font-weight: 600;">250 Kč/м</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Сантехнічна точка гаряча + холодна</td><td style="text-align: right; font-weight: 600;">650 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Подвійна сантехнічна точка</td><td style="text-align: right; font-weight: 600;">1 100 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Підключення пральної / посудомийної машини</td><td style="text-align: right; font-weight: 600;">750 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Підключення бойлера</td><td style="text-align: right; font-weight: 600;">1 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Монтаж бойлера до 100 л</td><td style="text-align: right; font-weight: 600;">2 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Монтаж бойлера 100–200 л</td><td style="text-align: right; font-weight: 600;">2 800 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Монтаж санітарного обладнання (унітаз, змішувач)</td><td style="text-align: right; font-weight: 600;">750 Kč</td></tr>
+            </table>
+        </div>
+
+        <!-- Категорія 3 -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">🎛️ Електрощити та автоматика</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Послуга</th><th style="text-align: right; padding: 0.75rem 0;">Ціна без ПДВ</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Розподільчий щит на 24 модулі</td><td style="text-align: right; font-weight: 600;">11 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Розподільчий щит на 36 модулів</td><td style="text-align: right; font-weight: 600;">14 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Розподільчий щит на 48 модулів</td><td style="text-align: right; font-weight: 600;">18 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Розподільчий щит на 72 модулі</td><td style="text-align: right; font-weight: 600;">25 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Автоматичний вимикач (автомат)</td><td style="text-align: right; font-weight: 600;">350 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Пристрій захисного відключення FI/RCD</td><td style="text-align: right; font-weight: 600;">1 400 Kč</td></tr>
+            </table>
+        </div>
+
+        <!-- Категорія 4 -->
+        <div>
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">📋 Діагностика та ревізії</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Послуга</th><th style="text-align: right; padding: 0.75rem 0;">Ціна без ПДВ</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Базова перевірка електропроводки</td><td style="text-align: right; font-weight: 600;">1 200 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Візуальний контроль</td><td style="text-align: right; font-weight: 600;">900 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Ревізійний звіт</td><td style="text-align: right; font-weight: 600;">відповідно до обсягу</td></tr>
+            </table>
         </div>
     </section>
 
-    <section id="prices" class="prices">
-        <div class="container">
-            <h2>Наші ціни</h2>
-            <div class="price-grid">
-                <div class="price-card">
-                    <h3>Базовий</h3>
-                    <div class="price">За запитом</div>
-                    <p>Ідеальний вибір для нових стартапів та лендингів.</p>
-                </div>
-                <div class="price-card featured">
-                    <h3>Стандартний</h3>
-                    <div class="price">Індивідуально</div>
-                    <p>Повна система автоматизації, інтегрована з хмарними архітектурами баз даних.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2>Контакти</h2>
-            <p>Пишіть нам на: <a href="mailto:info@vvond.eu">info@vvond.eu</a></p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 VVOND. Всі права захищено.</p>
-        </div>
-    </footer>
-</body>
-</html>
+    <section id="contact" style="padding: 3rem 2rem; background: #18181b; text-align: center; border-top: 1px solid #27272a;">
+        <h2>Контакти компанії</h2>
+        <p style="margin-top: 1rem; color: var(--gray);"><strong>Телефон / WhatsApp:</strong> +386 40 746 946</p>
+        <p style="color: var(--gray);"><strong>E-mail:</strong> vvond.d.o.o.o@gmail.com</p>
