@@ -3,71 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VVOND - Firemní řešení</title>
+    <title>WOND — Elektro & Voda Brno</title>
+    <link rel="alternate" hreflang="cs" href="http://vvond.eu" />
+    <link rel="alternate" hreflang="uk" href="http://vvond.eu" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">VVOND</div>
-            <nav>
-                <a href="#about">O nás</a>
-                <a href="#services">Služby</a>
-                <a href="#prices">Ceník</a>
-                <a href="#contact">Kontakt</a>
-            </nav>
-            <div class="lang-switch">
-                <a href="index.html">EN</a>
-                <a href="index_cz.html" class="active">CZ</a>
-                <a href="index_ua.html">UA</a>
-            </div>
+    <header class="navbar">
+        <div class="logo">WOND</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#services">Služby</a></li>
+                <li><a href="#prices">Ceník</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+        </nav>
+        <div class="lang-switcher">
+            <a href="index_cz.html" class="lang-btn active">CZ</a>
+            <a href="index_ua.html" class="lang-btn">UA</a>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <h1>Inovativní řešení pro Vaše podnikání</h1>
-            <p>Propojujeme moderní technologie se skutečnými výsledky. Rozviňte svůj potenciál s VVOND.</p>
-            <a href="#contact" class="btn">Kontaktujte nás</a>
+    <section class="hero" id="services">
+        <h1>Spolehlivá řešení. Kvalitní práce.</h1>
+        <p>Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby v Brně a okolí.</p>
+        <div style="margin-top: 2rem;">
+            <a href="tel:+38640746946" class="cta-btn" style="background: #0070f3; color: white; margin-right: 1rem;">Zavolat</a>
+            <a href="#prices" class="cta-btn">Zobrazit ceník</a>
         </div>
     </section>
 
-    <section id="about" class="about">
-        <div class="container">
-            <h2>O nás</h2>
-            <p>VVOND je spolehlivým partnerem v oblasti digitální transformace, automatizace procesů a budování robustních cloudových architektur. Pomáháme dynamickým týmům stavět stabilní projekty s celosvětovým zásahem.</p>
+    <section class="prices-section" id="prices" style="padding: 3rem 2rem; max-width: 900px; margin: 0 auto;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Kompletní ceník služeb</h2>
+        <p style="color: var(--gray); text-align: center; margin-bottom: 2.5rem;">Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí. <br><strong>Výjezd na místo do 50 km: 500 Kč</strong></p>
+
+        <!-- Категорія 1 -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">⚡ Elektroinstalace</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Služba</th><th style="text-align: right; padding: 0.75rem 0;">Cena bez DPH</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Elektro bod (zásuvka / vypínač)</td><td style="text-align: right; font-weight: 600;">450 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Další elektro bod</td><td style="text-align: right; font-weight: 600;">350 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Světelný bod</td><td style="text-align: right; font-weight: 600;">350 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Uložení kabelu v trubce</td><td style="text-align: right; font-weight: 600;">90 Kč/m</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Sekání a zapravení drážek</td><td style="text-align: right; font-weight: 600;">220 Kč/m</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Jednoduchý vypínač / zásuvka</td><td style="text-align: right; font-weight: 600;">300 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Dvojitý vypínač / zásuvka</td><td style="text-align: right; font-weight: 600;">400 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">USB / RJ45 / TV zásuvka</td><td style="text-align: right; font-weight: 600;">450 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Montáž svítidla / LED svítidla</td><td style="text-align: right; font-weight: 600;">400 Kč</td></tr>
+            </table>
+        </div>
+
+        <!-- Категорія 2 -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">💧 Vodovod a kanalizace</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Služba</th><th style="text-align: right; padding: 0.75rem 0;">Cena bez DPH</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">PPR potrubí</td><td style="text-align: right; font-weight: 600;">180 Kč/m</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">ALUPEX potrubí</td><td style="text-align: right; font-weight: 600;">220 Kč/m</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Kanalizační potrubí</td><td style="text-align: right; font-weight: 600;">250 Kč/m</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Vodní bod teplá + studená</td><td style="text-align: right; font-weight: 600;">650 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Dvojitý vodní bod</td><td style="text-align: right; font-weight: 600;">1 100 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Přípojka pro pračku / myčku</td><td style="text-align: right; font-weight: 600;">750 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Přípojka pro bojler</td><td style="text-align: right; font-weight: 600;">1 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Montáž bojleru do 100 l</td><td style="text-align: right; font-weight: 600;">2 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Montáž bojleru 100–200 l</td><td style="text-align: right; font-weight: 600;">2 800 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Montáž sanitárního vybavení</td><td style="text-align: right; font-weight: 600;">750 Kč</td></tr>
+            </table>
+        </div>
+
+        <!-- Категорія 3 -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">🎛️ Elektrické rozvaděče a ochrany</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Služba</th><th style="text-align: right; padding: 0.75rem 0;">Cena bez DPH</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Rozvaděč 24 modulů</td><td style="text-align: right; font-weight: 600;">11 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Rozvaděč 36 modulů</td><td style="text-align: right; font-weight: 600;">14 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Rozvaděč 48 modulů</td><td style="text-align: right; font-weight: 600;">18 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Rozvaděč 72 modulů</td><td style="text-align: right; font-weight: 600;">25 000 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Jistič</td><td style="text-align: right; font-weight: 600;">350 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Proudový chránič FI/RCD</td><td style="text-align: right; font-weight: 600;">1 400 Kč</td></tr>
+            </table>
+        </div>
+
+        <!-- Категорія 4 -->
+        <div>
+            <h3 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem;">📋 Kontroly / revize</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 2px solid #27272a; color: var(--gray);"><th style="padding: 0.75rem 0;">Služba</th><th style="text-align: right; padding: 0.75rem 0;">Cena bez DPH</th></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Základní kontrola elektroinstalace</td><td style="text-align: right; font-weight: 600;">1 200 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Vizuální kontrola</td><td style="text-align: right; font-weight: 600;">900 Kč</td></tr>
+                <tr style="border-bottom: 1px solid #27272a;"><td style="padding: 0.75rem 0;">Revizní zpráva</td><td style="text-align: right; font-weight: 600;">dle rozsahu</td></tr>
+            </table>
         </div>
     </section>
 
-    <section id="prices" class="prices">
-        <div class="container">
-            <h2>Ceník služeb</h2>
-            <div class="price-grid">
-                <div class="price-card">
-                    <h3>Základní</h3>
-                    <div class="price">Na dotaz</div>
-                    <p>Ideální volba pro začínající startupy a jednoduché vizitky.</p>
-                </div>
-                <div class="price-card featured">
-                    <h3>Standardní</h3>
-                    <div class="price">Individuální</div>
-                    <p>Kompletní automatizovaný systém propojený s cloudovou databází.</p>
-                </div>
-            </div>
-        </div>
+    <section id="contact" style="padding: 3rem 2rem; background: #18181b; text-align: center; border-top: 1px solid #27272a;">
+        <h2>Kontaktujte nás</h2>
+        <p style="margin-top: 1rem; color: var(--gray);"><strong>Telefon / WhatsApp:</strong> +386 40 746 946</p>
+        <p style="color: var(--gray);"><strong>E-mail:</strong> vvond.d.o.o.o@gmail.com</p>
+        <p style="color: var(--gray); margin-top: 1rem;">Česko: Valašská 1, 625 00 Brno-Starý Lískovec</p>
     </section>
 
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2>Kontakt</h2>
-            <p>Napište nám na: <a href="mailto:info@vvond.eu">info@vvond.eu</a></p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 VVOND. Všechna práva vyhrazena.</p>
-        </div>
+    <footer class="footer">
+        <p>&copy; 2026 WOND · Všechna práva vyhrazena</p>
     </footer>
 </body>
 </html>
