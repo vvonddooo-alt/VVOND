@@ -1,81 +1,290 @@
-<!doctype html>
-<html lang="uk">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WOND — Elektro & Voda</title>
-<meta name="description" content="Wond-elektro — elektroinstalace, vodovod, topení, ALUPEX a montážní práce.">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VVOND | Professional Digital Solutions</title>
+    <meta name="description" content="High-end web development, automation, and cloud database optimization.">
+    <!-- SEO Мультимовність: hreflang повідомляє пошуковим ботам про інші версії -->
+    <link rel="alternate" hreflang="en" href="https://vvond.eu" />
+    <link rel="alternate" hreflang="cs" href="https://vvond.euindex_cz.html" />
+    <link rel="alternate" hreflang="uk" href="https://vvond.euindex_ua.html" />
+    <link rel="alternate" hreflang="x-default" href="https://vvond.eu" />
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Розумне визначення мови при першому візиті
+        (function() {
+            if (!localStorage.getItem('language_set')) {
+                const userLang = navigator.language || navigator.userLanguage;
+                localStorage.setItem('language_set', 'true');
+                if (userLang.startsWith('cs')) {
+                    window.location.replace('index_cz.html');
+                } else if (userLang.startsWith('uk') || userLang.startsWith('ru')) {
+                    window.location.replace('index_ua.html');
+                }
+            }
+        })();
+    </script>
 </head>
 <body>
-<header class="hero">
-<nav class="nav"><a class="logo" href="#">WOND<span>elektro</span></a>
-<div class="nav-right"><div class="links"><a href="#services" data-i18n="nav_services">Služby</a><a href="#prices" data-i18n="nav_prices">Ceník</a><a href="#gallery" data-i18n="nav_gallery">Galerie</a><a href="#company" data-i18n="nav_company">Firma</a><a href="#contact" data-i18n="nav_contact">Kontakt</a><a href="#admin-login" class="admin-link">Admin</a></div>
-<label class="language"><span>🌐</span><select id="language" aria-label="Language selector"></select></label></div></nav>
-<div class="hero-content"><p class="eyebrow" data-i18n="eyebrow">ELEKTRO · VODA · MONTÁŽE</p>
-<h1 data-i18n="hero_title">Spolehlivá řešení.<br><span>Kvalitní práce.</span></h1>
-<p class="lead" data-i18n="hero_text">Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.</p>
-<div class="actions"><a class="btn primary" href="tel:+38640746946" data-i18n="call">Zavolat</a><a class="btn ghost" href="#prices" data-i18n="show_prices">Zobrazit ceník</a></div><div class="hero-business-card"><img src="images/business-card.png" alt="Vizitka WOND"></div></div>
-</header>
-<main>
-<section id="services" class="section"><h2 data-i18n="services_title">Naše služby</h2><p class="section-lead" data-i18n="services_lead">Profesionální elektroinstalační, instalatérské a montážní práce.</p>
-<div class="service-grid">
-<article><div class="icon">⚡</div><h3 data-i18n="electro">Elektroinstalace</h3><p data-i18n="electro_text">Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.</p></article>
-<article><div class="icon">💧</div><h3 data-i18n="water">Vodovod a instalatérské práce</h3><p data-i18n="water_text">Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.</p></article>
-<article><div class="icon">🛠️</div><h3 data-i18n="assembly">Montáž a demontáž</h3><p data-i18n="assembly_text">Různé montážní práce, rekonstrukce, opravy a údržba.</p></article>
-<article><div class="icon">🏠</div><h3 data-i18n="building">Drobné stavební práce</h3><p data-i18n="building_text">Renovace, opravy, sádrokarton a individuální práce.</p></article>
-</div></section>
-<section id="company" class="section company-section"><h2 data-i18n="company_title">O společnosti</h2><p class="section-lead" data-i18n="company_lead">WOND poskytuje elektroinstalační, vodoinstalatérské a montážní služby pro domácnosti, firmy, developery i stavební projekty. Máme více než 10 let zkušeností v oboru.</p>
-<div class="company-grid"><article class="company-card profile-card"><div class="profile-avatar">W</div><div><span class="kicker" data-i18n="management">Vedení společnosti</span><h3 data-i18n="director_name">Vasyl Yarema</h3><p data-i18n="director_role">Ředitel společnosti</p><p class="muted" data-i18n="director_text">Koordinace zakázek, komunikace se zákazníky, technické řešení a dohled nad realizací.</p></div></article><article class="company-card"><h3 data-i18n="why_title">Proč WOND</h3><ul><li data-i18n="why_1">Individuální přístup ke každé zakázce</li><li data-i18n="why_2">Transparentní cenová nabídka</li><li data-i18n="why_3">Důraz na bezpečnost a čistou práci</li><li data-i18n="why_4">Koordinace elektro, vody a montáží</li><li data-i18n="why_5">Působnost v Česku i Slovinsku</li></ul></article><article class="company-card"><h3 data-i18n="process_title">Jak probíhá spolupráce</h3><ol><li data-i18n="process_1">Kontakt a popis požadavku</li><li data-i18n="process_2">Domluva termínu a rozsahu</li><li data-i18n="process_3">Cenová nabídka</li><li data-i18n="process_4">Realizace a předání práce</li></ol></article></div></section>
-<section id="prices" class="section price-section"><h2 data-i18n="prices_title">Kompletní ceník služeb</h2><p class="section-lead" data-i18n="prices_lead">Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.</p>
-<div class="notice"><b data-i18n="notice">Výjezd na místo do 50 km: 500 Kč</b><br><span data-i18n="area">Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.</span></div>
-<div class="price-controls" style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;padding:18px;background:#f3f6fa;border-radius:12px;color:#172033"><label>Country / Země <select id="price-country"><option value="CZ">Česko</option><option value="SI">Slovenija</option><option value="SK">Slovensko</option><option value="UA">Україна</option><option value="DE">Deutschland</option><option value="PL">Polska</option><option value="RO">România</option><option value="HU">Magyarország</option><option value="HR">Hrvatska</option><option value="GB">United Kingdom</option></select></label><label>City / Město <select id="price-city"></select></label><label>Prices <select id="vat-mode"><option value="net">Without VAT / Bez DPH</option><option value="gross">With VAT / Včetně DPH</option><option value="both">Both / Obojí</option></select></label><p id="price-note" style="width:100%;margin:0;font-size:13px">Indicative converted prices; confirm local rates before publishing.</p></div>
-<div class="price-grid">
-<div class="price-card"><h3>Elektroinstalace</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody><tr><td>Elektro bod (zásuvka / stikalo)</td><td>450 Kč</td></tr><tr><td>Další elektro bod</td><td>350 Kč</td></tr><tr><td>Světelný bod</td><td>350 Kč</td></tr><tr><td>Uložení kabelu v trubce</td><td>90 Kč/m</td></tr><tr><td>Sekání a zapravení drážek</td><td>220 Kč/m</td></tr><tr><td>Jednoduchý vypínač</td><td>300 Kč</td></tr><tr><td>Dvojitý vypínač</td><td>400 Kč</td></tr><tr><td>Jednoduchá zásuvka</td><td>300 Kč</td></tr><tr><td>Dvojitá zásuvka</td><td>400 Kč</td></tr><tr><td>USB zásuvka</td><td>450 Kč</td></tr><tr><td>RJ45 zásuvka</td><td>400 Kč</td></tr><tr><td>TV zásuvka</td><td>400 Kč</td></tr><tr><td>Montáž svítidla</td><td>400 Kč</td></tr><tr><td>LED svítidlo</td><td>450 Kč</td></tr><tr><td>Stmívač</td><td>450 Kč</td></tr></tbody></table></div>
-<div class="price-card"><h3>Vodovod a kanalizace</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody><tr><td>PPR potrubí</td><td>180 Kč/m</td></tr><tr><td>ALUPEX potrubí</td><td>220 Kč/m</td></tr><tr><td>Kanalizační potrubí</td><td>250 Kč/m</td></tr><tr><td>Vodní bod teplá + studená</td><td>650 Kč</td></tr><tr><td>Dvojitý vodní bod</td><td>1 100 Kč</td></tr><tr><td>Přípojka pro pračku</td><td>750 Kč</td></tr><tr><td>Přípojka pro myčku</td><td>750 Kč</td></tr><tr><td>Přípojka pro bojler</td><td>1 000 Kč</td></tr><tr><td>Montáž bojleru do 100 l</td><td>2 000 Kč</td></tr><tr><td>Montáž bojleru 100–200 l</td><td>2 800 Kč</td></tr><tr><td>Montáž sanitárního vybavení</td><td>750 Kč</td></tr><tr><td>Rozdělovač</td><td>2 000 Kč</td></tr><tr><td>Vodní filtr</td><td>700 Kč</td></tr><tr><td>Redukční ventil</td><td>1 000 Kč</td></tr></tbody></table></div>
-<div class="price-card"><h3>Elektrické rozvaděče a ochrany</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody><tr><td>Rozvaděč 24 modulů</td><td>11 000 Kč</td></tr><tr><td>Rozvaděč 36 modulů</td><td>14 000 Kč</td></tr><tr><td>Rozvaděč 48 modulů</td><td>18 000 Kč</td></tr><tr><td>Rozvaděč 72 modulů</td><td>25 000 Kč</td></tr><tr><td>Přepěťová ochrana SPD typ 2</td><td>2 800 Kč</td></tr><tr><td>Relé / ochrana napětí</td><td>2 800 Kč</td></tr><tr><td>Jistič</td><td>350 Kč</td></tr><tr><td>Proudový chránič FI/RCD</td><td>1 400 Kč</td></tr><tr><td>RCBO kombinace</td><td>1 300 Kč</td></tr></tbody></table></div>
-<div class="price-card"><h3>Kontroly / revize</h3><table><thead><tr><th data-i18n="service">Služba</th><th data-i18n="price">Cena</th></tr></thead><tbody><tr><td>Základní kontrola elektroinstalace</td><td>1 200 Kč</td></tr><tr><td>Vizuální kontrola</td><td>900 Kč</td></tr><tr><td>Revizní zpráva</td><td>dle rozsahu</td></tr></tbody></table></div>
-<div class="price-card"><h3>Výjezd na místo</h3><table><tbody><tr><td>Výjezd na místo do 50 km</td><td>500 Kč</td></tr></tbody></table></div>
-</div></section>
-<section id="gallery" class="section"><h2 data-i18n="gallery_title">Naše ceníky</h2><p class="section-lead" data-i18n="gallery_lead">Fotografie našich prací a prezentační materiály WOND</p>
-<div class="gallery"><figure><img src="images/cenik-brno-1.jpeg" alt="Ceník WOND"><figcaption>Ceník služeb — Brno a okolí</figcaption></figure></div></section>
-<section id="contact" class="section contact"><h2 data-i18n="contact_title">Kontaktujte nás</h2><div class="contact-grid"><div><h3>WOND</h3><p><b>Obchodní značka:</b> WOND</p><p><b>Ředitel:</b> Vasyl Yarema</p><p><b>Oficiální název:</b> VALIK, OLEKSANDRA, NATALIIA, DANIELA</p><p><b>Registrační číslo:</b> ЄДРПОУ 46068515</p><p><b>Adresa registrace:</b> Кічерели 214, Хуст</p>
-<p><b data-i18n="phone">Telefon / WhatsApp</b>: <a href="tel:+38640746946">+386 40 746 946</a></p><p><b data-i18n="email">E-mail</b>: <a href="mailto:vvond.d.o.o.o@gmail.com">vvond.d.o.o.o@gmail.com</a></p>
-<p><b data-i18n="slovenia">Slovinsko</b>: Prisojna cesta 4, Radenci</p><p><b data-i18n="czechia">Česko</b>: Valašská 1, 625 00 Brno-Starý Lískovec</p>
-<p><b data-i18n="tax">Daňové číslo</b>: 73976911</p><p><b data-i18n="ico">IČO</b>: 53972775</p><p><b data-i18n="vat">DPH</b>: <span data-i18n="nonpayer">Neplátce DPH</span></p></div>
-<div><h3 data-i18n="social">Sociální sítě</h3><a class="social" href="https://www.facebook.com/share/1FWPMnGiwr/?mibextid=wwXIfr" target="_blank">Facebook</a><a class="social" href="https://www.instagram.com/vaclavsytar?stkn=Zm1xMDc2YXV3c3hk&utm_source=qr" target="_blank">Instagram</a><a class="social" href="https://youtube.com/@vaclavsytar?si=PC-2Lz8y_xwxEcgz" target="_blank">YouTube</a><a class="social" href="https://www.tiktok.com/@wond.si?_r=1&_t=ZS-99qN7fnp6YS" target="_blank">TikTok</a></div></div></section>
-<section id="admin-login" class="admin-section section">
-<h2>Administrace webu</h2>
-<p class="section-lead">Přihlášení správce pro přidávání a mazání fotografií v sekci „Naše práce“.</p>
-<div id="admin-login-box" class="admin-card">
-<label for="admin-username">E-mail / přihlašovací jméno</label>
-<div class="admin-row"><input id="admin-username" type="email" placeholder="vaclav.sytar@icloud.com"></div>
-<label for="admin-password">Heslo</label>
-<div class="admin-row"><input id="admin-password" type="password" placeholder="Zadejte heslo"><button id="admin-login-btn" class="btn primary" type="button">Přihlásit</button></div>
-<p id="admin-message" class="admin-message" role="status"></p>
-</div>
-<div id="admin-panel" class="admin-card" hidden>
-<div class="admin-panel-head"><h3>Správa fotografií</h3><button id="admin-logout-btn" class="btn ghost dark" type="button">Odhlásit</button></div>
-<p class="muted">Přidej fotografie svých prací. Změny se uloží v tomto prohlížeči.</p>
-<div class="admin-form-grid"><label>Název práce<input id="photo-title" type="text" placeholder="Např. Montáž rozvaděče"></label><label>Fotografie<input id="photo-files" type="file" accept="image/*" multiple></label></div>
-<button id="photo-add-btn" class="btn primary" type="button">Přidat do „Naše práce“</button>
-<div id="admin-items" class="admin-items"></div>
-<hr>
-<div id="user-management" hidden>
-<h3>Správa používateľov</h3>
-<p class="muted">Iba hlavný administrátor môže pridávať ďalších používateľov.</p>
-<div class="admin-form-grid">
-<label>Prihlasovacie meno / e-mail<input id="new-user-name" type="text" placeholder="napr. sekretarka@wond.eu"></label>
-<label>Heslo<input id="new-user-password" type="password" placeholder="Nové heslo"></label>
-<label>Rola<select id="new-user-role"><option value="Юрист">Jurista</option><option value="Секретар">Sekretár</option><option value="Менеджер">Manažér</option><option value="Фотограф">Fotograf</option><option value="Адміністратор">Administrátor</option></select></label>
-</div>
-<button id="add-user-btn" class="btn primary" type="button">Pridať používateľa</button>
-<div id="users-list" class="admin-items"></div>
-</div>
-</div>
-</section>
-</main><footer>© 2026 WOND · <span data-i18n="footer">Všechna práva vyhrazena</span></footer>
-<script>window.TRANSLATIONS = {"uk": {"name": "Українська", "nav_services": "Послуги", "nav_prices": "Прайс", "nav_gallery": "Галерея", "nav_company": "Про компанію", "nav_contact": "Контакти", "eyebrow": "ЕЛЕКТРО · ВОДА · МОНТАЖ", "hero_title": "Надійні рішення.<br><span>Якісна робота.</span>", "hero_text": "Електромонтаж, сантехніка, опалення, ALUPEX та монтажні роботи для дому, бізнесу й будівельних об’єктів.", "call": "Зателефонувати", "show_prices": "Переглянути прайс", "services_title": "Наші послуги", "services_lead": "Професійні електричні, сантехнічні та монтажні роботи.", "electro": "Електромонтаж", "electro_text": "Проводка, розетки, освітлення, електричні щити, діагностика та ремонт.", "water": "Сантехніка та водопровід", "water_text": "Водопровід, каналізація, опалення, ALUPEX та сантехнічне обладнання.", "assembly": "Монтаж і демонтаж", "assembly_text": "Різноманітні монтажні роботи, реконструкція, ремонт та обслуговування.", "building": "Дрібні будівельні роботи", "building_text": "Реконструкція, ремонт, гіпсокартон та інші індивідуальні роботи.", "prices_title": "Повний прайс послуг", "prices_lead": "Ціни з наданих цінників для Брно та околиць. Ціни орієнтовні; остаточна вартість залежить від обсягу та складності роботи.", "notice": "Виїзд на місце до 50 км: 500 Kč", "area": "Район роботи: Брно, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov та околиці.", "service": "Послуга", "price": "Ціна", "gallery_title": "Наші цінники", "gallery_lead": "Оригінальні презентаційні матеріали Wond-elektro", "contact_title": "Зв’яжіться з нами", "phone": "Телефон / WhatsApp", "email": "E-mail", "slovenia": "Словенія", "czechia": "Чехія", "tax": "Податковий номер", "ico": "IČO", "vat": "ПДВ", "nonpayer": "Неплатник ПДВ", "social": "Соціальні мережі", "footer": "Усі права захищено"}, "cs": {"name": "Čeština", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "sl": {"name": "Slovenščina", "nav_services": "Storitve", "nav_prices": "Cenik", "nav_gallery": "Galerija", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTAŽA", "hero_title": "Zanesljive rešitve.<br><span>Kakovostno delo.</span>", "hero_text": "Elektroinštalacije, vodovod, ogrevanje, ALUPEX in montažna dela za domove, podjetja in objekte.", "call": "Pokličite nas", "show_prices": "Oglejte si cenik", "services_title": "Naše storitve", "services_lead": "Profesionalna elektroinštalacijska, vodovodna in montažna dela.", "electro": "Elektroinštalacije", "electro_text": "Električne napeljave, vtičnice, razsvetljava, omarice, diagnostika in popravila.", "water": "Vodovod in inštalacije", "water_text": "Vodovod, kanalizacija, ogrevanje, ALUPEX in sanitarna oprema.", "assembly": "Montaža in demontaža", "assembly_text": "Različna montažna dela, prenove, popravila in vzdrževanje.", "building": "Manjša gradbena dela", "building_text": "Obnove, popravila, suhomontaža in individualna dela.", "prices_title": "Celoten cenik storitev", "prices_lead": "Cene iz priloženih cenikov za Brno in okolico. Cene so okvirne; končna cena je odvisna od obsega in zahtevnosti dela.", "notice": "Izvoz na teren do 50 km: 500 Kč", "area": "Območje dela: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov in okolica.", "service": "Storitev", "price": "Cena", "gallery_title": "Naši ceniki", "gallery_lead": "Izvirni predstavitveni materiali Wond-elektro", "contact_title": "Kontaktirajte nas", "phone": "Telefon / WhatsApp", "email": "E-pošta", "slovenia": "Slovenija", "czechia": "Češka", "tax": "Davčna številka", "ico": "IČO", "vat": "DDV", "nonpayer": "Neplačnik DDV", "social": "Družbena omrežja", "footer": "Vse pravice pridržane"}, "sk": {"name": "Slovenčina", "nav_services": "Služby", "nav_prices": "Cenník", "nav_gallery": "Galéria", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spoľahlivé riešenia.<br><span>Kvalitná práca.</span>", "hero_text": "Elektroinštalácie, voda, kúrenie, ALUPEX a montážne práce pre domácnosti, firmy a stavby.", "call": "Zavolať", "show_prices": "Zobraziť cenník", "services_title": "Naše služby", "services_lead": "Profesionálne elektroinštalačné, vodoinštalačné a montážne práce.", "electro": "Elektroinštalácie", "electro_text": "Rozvody, zásuvky, osvetlenie, rozvádzače, diagnostika a opravy.", "water": "Vodovod a inštalatérske práce", "water_text": "Vodovod, kanalizácia, kúrenie, ALUPEX a sanitárne vybavenie.", "assembly": "Montáž a demontáž", "assembly_text": "Rôzne montážne práce, rekonštrukcie, opravy a údržba.", "building": "Drobné stavebné práce", "building_text": "Renovácie, opravy, sadrokartón a individuálne práce.", "prices_title": "Kompletný cenník služieb", "prices_lead": "Ceny z dodaných cenníkov pre Brno a okolie. Ceny sú orientačné; konečná cena závisí od rozsahu a náročnosti práce.", "notice": "Výjazd do 50 km: 500 Kč", "area": "Oblasť pôsobenia: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolie.", "service": "Služba", "price": "Cena", "gallery_title": "Naše cenníky", "gallery_lead": "Originálne prezentačné materiály Wond-elektro", "contact_title": "Kontaktujte nás", "phone": "Telefón / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplatiteľ DPH", "social": "Sociálne siete", "footer": "Všetky práva vyhradené"}, "de": {"name": "Deutsch", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "en": {"name": "English", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "hr": {"name": "Hrvatski", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "sr": {"name": "Srpski", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "it": {"name": "Italiano", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "hu": {"name": "Magyar", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "pl": {"name": "Polski", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}, "ro": {"name": "Română", "nav_services": "Služby", "nav_prices": "Ceník", "nav_gallery": "Galerie", "nav_company": "O společnosti", "nav_contact": "Kontakt", "eyebrow": "ELEKTRO · VODA · MONTÁŽE", "hero_title": "Spolehlivá řešení.<br><span>Kvalitní práce.</span>", "hero_text": "Elektroinstalace, voda, topení, ALUPEX a montážní práce pro domácnosti, firmy i stavby.", "call": "Zavolat", "show_prices": "Zobrazit ceník", "services_title": "Naše služby", "services_lead": "Profesionální elektroinstalační, instalatérské a montážní práce.", "electro": "Elektroinstalace", "electro_text": "Rozvody, zásuvky, osvětlení, rozvaděče, diagnostika a opravy.", "water": "Vodovod a instalatérské práce", "water_text": "Vodovod, kanalizace, topení, ALUPEX a sanitární vybavení.", "assembly": "Montáž a demontáž", "assembly_text": "Různé montážní práce, rekonstrukce, opravy a údržba.", "building": "Drobné stavební práce", "building_text": "Renovace, opravy, sádrokarton a individuální práce.", "prices_title": "Kompletní ceník služeb", "prices_lead": "Ceny z dodaných ceníků pro Brno a okolí. Ceny jsou orientační; konečná cena závisí na rozsahu a náročnosti práce.", "notice": "Výjezd na místo do 50 km: 500 Kč", "area": "Oblast působení: Brno, Kuřim, Rosice, Ivančice, Židlochovice, Blansko, Vyškov a okolí.", "service": "Služba", "price": "Cena", "gallery_title": "Naše ceníky", "gallery_lead": "Fotografie našich prací a prezentační materiály WOND", "contact_title": "Kontaktujte nás", "phone": "Telefon / WhatsApp", "email": "E-mail", "slovenia": "Slovinsko", "czechia": "Česko", "tax": "Daňové číslo", "ico": "IČO", "vat": "DPH", "nonpayer": "Neplátce DPH", "social": "Sociální sítě", "footer": "Všechna práva vyhrazena"}};</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="script.js"></script><script src="regional-prices.js"></script>
-</body></html>
+    <header class="navbar">
+        <div class="logo">VVOND</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <!-- Перемикач мов -->
+        <div class="lang-switcher">
+            <a href="index.html" class="lang-btn active">EN</a>
+            <a href="index_cz.html" class="lang-btn">CZ</a>
+            <a href="index_ua.html" class="lang-btn">UA</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Code, Planning, and Automation</h1>
+        <p>We build production-ready digital architectures powered by modern databases and clean code.</p>
+        <a href="#contact" class="cta-btn">Get Started</a>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 VVOND. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VVOND | Profesionální digitální řešení</title>
+    <meta name="description" content="Špičkový vývoj webu, automatizace a optimalizace cloudových databází.">
+    <link rel="alternate" hreflang="en" href="https://vvond.eu" />
+    <link rel="alternate" hreflang="cs" href="https://vvond.euindex_cz.html" />
+    <link rel="alternate" hreflang="uk" href="https://vvond.euindex_ua.html" />
+    <link rel="alternate" hreflang="x-default" href="https://vvond.eu" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">VVOND</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#services">Služby</a></li>
+                <li><a href="#about">O nás</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+        </nav>
+        <div class="lang-switcher">
+            <a href="index.html" class="lang-btn">EN</a>
+            <a href="index_cz.html" class="lang-btn active">CZ</a>
+            <a href="index_ua.html" class="lang-btn">UA</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Kód, plánování a automatizace</h1>
+        <p>Vytváříme digitální architektury připravené pro produkci s využitím moderních databází a čistého kódu.</p>
+        <a href="#contact" class="cta-btn">Začněme</a>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 VVOND. Všechna práva vyhrazena.</p>
+    </footer>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VVOND | Професійні цифрові рішення</title>
+    <meta name="description" content="Висококласна веб-розробка, автоматизація та оптимізація хмарних баз даних.">
+    <link rel="alternate" hreflang="en" href="https://vvond.eu" />
+    <link rel="alternate" hreflang="cs" href="https://vvond.euindex_cz.html" />
+    <link rel="alternate" hreflang="uk" href="https://vvond.euindex_ua.html" />
+    <link rel="alternate" hreflang="x-default" href="https://vvond.eu" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">VVOND</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#services">Послуги</a></li>
+                <li><a href="#about">Про нас</a></li>
+                <li><a href="#contact">Контакти</a></li>
+            </ul>
+        </nav>
+        <div class="lang-switcher">
+            <a href="index.html" class="lang-btn">EN</a>
+            <a href="index_cz.html" class="lang-btn">CZ</a>
+            <a href="index_ua.html" class="lang-btn active">UA</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Код, планування та автоматизація</h1>
+        <p>Ми створюємо готові до розгортання цифрові архітектури на базі сучасних баз даних та чистого коду.</p>
+        <a href="#contact" class="cta-btn">Почати роботу</a>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 VVOND. Всі права захищені.</p>
+    </footer>
+</body>
+</html>
+:root {
+    --primary: #0070f3;
+    --dark: #0a0a0a;
+    --light: #f4f4f5;
+    --gray: #a1a1aa;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--dark);
+    color: var(--white);
+    line-height: 1.6;
+}
+
+/* Навігаційна панель */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #27272a;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    color: var(--white);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--gray);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: var(--white);
+}
+
+/* Перемикач мов */
+.lang-switcher {
+    display: flex;
+    gap: 0.5rem;
+    background: #18181b;
+    padding: 0.25rem;
+    border-radius: 6px;
+    border: 1px solid #27272a;
+}
+
+.lang-btn {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+    color: var(--white);
+}
+
+.lang-btn.active {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Головний блок (Hero) */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 70vh;
+    padding: 2rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(180deg, #fff 0%, #a1a1aa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--gray);
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+}
+
+.cta-btn {
+    background-color: var(--white);
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.cta-btn:hover {
+    transform: translateY(-2px);
+    background-color: var(--light);
+}
+
+/* Футер */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    color: #52525b;
+    font-size: 0.9rem;
+    border-top: 1px solid #27272a;
+}
+
+/* Адаптивність для телефонів */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .nav-links {
+        gap: 1rem;
+    }
+    .hero h1 {
+        font-size: 2.25rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+}
