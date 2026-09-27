@@ -1,19 +1,28 @@
 // ==========================================
-// 1. НАЛАШТУВАННЯ SUPABASE
+// НАЛАШТУВАННЯ SUPABASE
 // ==========================================
 const SUPABASE_URL = 'ТУТ_ТВОЯ_SUPABASE_URL';
 const SUPABASE_ANON_KEY = 'ТУТ_ТВОЙ_ANON_KEY';
 
-// Ініціалізація клієнта Supabase
+// Захист від забутих ключів
+if (SUPABASE_URL.includes('ТУТ_ТВОЯ') || SUPABASE_ANON_KEY.includes('ТУТ_ТВОЙ')) {
+    console.error('ПОМИЛКА: Вкажи свої реальні SUPABASE_URL та SUPABASE_ANON_KEY у файлі app.js!');
+}
+
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Генерація випадкового імені для користувача в чаті (якщо його ще немає)
+let currentUsername = localStorage.getItem('chat_username');
+if (!currentUsername) {
+    currentUsername = 'Користувач_' + Math.floor(Math.random() * 900 + 100);
+    localStorage.setItem('chat_username', currentUsername);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Запускаємо завантаження даних при відкритті сайту/додатка
     loadPrices();
     loadMessages();
     setupChatRealtime();
 
-    // Налаштування відправки повідомлень у чаті
     const chatForm = document.getElementById('chat-form');
     if (chatForm) {
         chatForm.addEventListener('submit', handleSendMessage);
@@ -21,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 2. ЗАВАНТАЖЕННЯ ЦІН (без зависань)
+// 1. ЗАВАНТАЖЕННЯ ЦІН (без зависань)
 // ==========================================
 async function loadPrices() {
     const priceContainer = document.getElementById('price-list');
@@ -30,7 +39,6 @@ async function loadPrices() {
     try {
         priceContainer.innerHTML = '<p>Завантаження цін...</p>';
 
-        // Запит до таблиці з цінами (зміни 'products' на назву своєї таблиці, якщо вона інша)
         const { data: products, error } = await supabaseClient
             .from('products')
             .select('*');
@@ -42,7 +50,6 @@ async function loadPrices() {
             return;
         }
 
-        // Рендеримо ціни на сторінці
         priceContainer.innerHTML = products.map(item => `
             <div class="price-item">
                 <h3>${escapeHtml(item.name || 'Товар')}</h3>
@@ -57,16 +64,13 @@ async function loadPrices() {
 }
 
 // ==========================================
-// 3. РОБОТА З ЧАТОМ
+// 2. РОБОТА З ЧАТОМ
 // ==========================================
-
-// Завантаження історії повідомлень
 async function loadMessages() {
     const chatBox = document.getElementById('chat-messages');
     if (!chatBox) return;
 
     try {
-        // Запит до таблиці повідомлень (зміни 'messages' на свою таблицю чату)
         const { data: messages, error } = await supabaseClient
             .from('messages')
             .select('*')
@@ -85,7 +89,6 @@ async function loadMessages() {
     }
 }
 
-// Відправка нового повідомлення
 async function handleSendMessage(e) {
     e.preventDefault();
     const inputField = document.getElementById('chat-input');
@@ -95,17 +98,20 @@ async function handleSendMessage(e) {
     const text = inputField.value.trim();
     if (!text) return;
 
-    // Тимчасово блокуємо кнопку, щоб уникнути подвійного надсилання
     if (sendButton) sendButton.disabled = true;
 
     try {
         const { error } = await supabaseClient
             .from('messages')
-            .insert([{ text: text, created_at: new Date() }]);
+            .insert([{ 
+                text: text, 
+                username: currentUsername, 
+                created_at: new Date() 
+            }]);
 
         if (error) throw error;
 
-        inputField.value = ''; // Очищаємо поле введення
+        inputField.value = '';
     } catch (err) {
         console.error('Помилка надсилання:', err.message);
         alert('Не вдалося надіслати повідомлення.');
@@ -115,7 +121,6 @@ async function handleSendMessage(e) {
     }
 }
 
-// Миттєве оновлення чату в реальному часі (Realtime)
 function setupChatRealtime() {
     supabaseClient
         .channel('public:messages')
@@ -127,26 +132,26 @@ function setupChatRealtime() {
         .subscribe();
 }
 
-// Додавання повідомлення у вікно чату
 function appendMessageToDOM(msg) {
     const chatBox = document.getElementById('chat-messages');
     if (!chatBox) return;
 
     const messageElement = document.createElement('div');
     messageElement.className = 'chat-message';
-    messageElement.textContent = msg.text;
+    
+    const author = escapeHtml(msg.username || 'Гість');
+    const content = escapeHtml(msg.text || '');
+    messageElement.innerHTML = `<strong>${author}:</strong> ${content}`;
+    
     chatBox.appendChild(messageElement);
 }
 
-// Автопрокрутка чату вниз
 function scrollToBottom(container) {
     container.scrollTop = container.scrollHeight;
 }
 
-// Захист від XSS-ін'єкцій
 function escapeHtml(str) {
     return String(str).replace(/[&<>'"]/g, 
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
     );
 }
-
