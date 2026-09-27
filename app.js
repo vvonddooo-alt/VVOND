@@ -4,7 +4,20 @@
   /* =========================================================
      WOND — FULL APP
      ========================================================= */
+window.WOND_LANG = nextLang;
 
+localStorage.setItem(
+  "wond-lang",
+  nextLang
+);
+
+window.dispatchEvent(
+  new CustomEvent("wond:language-change", {
+    detail: {
+      lang: nextLang
+    }
+  })
+);
   const cfg = window.WOND_SUPABASE || {};
 
   const configured =
