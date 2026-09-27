@@ -26,16 +26,16 @@
    * вона має пріоритет над vat із prices.js.
    */
   const VAT_RATES = {
-    CZ: 0.21,
-    UA: 0.20,
-    SI: 0.22,
-    SK: 0.23,
-    DE: 0.19,
-    PL: 0.23,
-    RO: 0.21,
-    HU: 0.27,
-    HR: 0.25,
-    GB: 0.20
+    CZ: 21,
+    UA: 20,
+    SI: 22,
+    SK: 23,
+    DE: 19,
+    PL: 23,
+    RO: 21,
+    HU: 27,
+    HR: 25,
+    GB: 20
   };
 
   const $ = (selector) => document.querySelector(selector);
