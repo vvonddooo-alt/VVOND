@@ -2,37 +2,29 @@
   "use strict";
 
   /*
-   * =========================================================
    * WOND PRICE + VAT
-   * =========================================================
    *
-   * This file controls ONLY:
-   * - country selector
-   * - currency
-   * - VAT mode
-   * - price rendering
-   *
-   * Required data from prices.js:
-   * - window.WOND_COUNTRIES
-   * - window.WOND_PRICE_ITEMS
-   * - window.WOND_LOCAL_PRICES
-   * - window.WOND_COUNTRY_NAMES
-   * - window.WOND_CATEGORY_NAMES
-   * - window.WOND_PRICE_TRANSLATIONS
+   * Бере дані з:
+   *   window.WOND_COUNTRIES
+   *   window.WOND_PRICE_ITEMS
+   *   window.WOND_PRICE_TRANSLATIONS
+   *   window.WOND_COUNTRY_NAMES
+   *   window.WOND_LOCAL_PRICES
    *
    * HTML:
    *   #price-country
    *   #vat-mode
    *   #price-grid
-   *
-   * =========================================================
    */
 
+  const DEFAULT_COUNTRY = "CZ";
+  const DEFAULT_MODE = "net";
 
-  /* =========================================================
-     VAT RATES
-     ========================================================= */
-
+  /*
+   * Реальні ставки використовуються тут.
+   * Якщо для країни ставка є в цьому списку —
+   * вона має пріоритет над vat із prices.js.
+   */
   const VAT_RATES = {
     CZ: 0.21,
     UA: 0.20,
@@ -46,366 +38,328 @@
     GB: 0.20
   };
 
+  const $ = (selector) => document.querySelector(selector);
 
-  /* =========================================================
-     DEFAULT COUNTRY
-     ========================================================= */
-
-  const DEFAULT_COUNTRY = "CZ";
-  const DEFAULT_MODE = "net";
-
-
-  /* =========================================================
-     DOM HELPERS
-     ========================================================= */
-
-  const $ = (selector) => {
-    return document.querySelector(selector);
-  };
-
-
-  /* =========================================================
-     DATA
-     ========================================================= */
-
-  const getCountries = () => {
+  function getCountries() {
     return Array.isArray(window.WOND_COUNTRIES)
       ? window.WOND_COUNTRIES
       : [];
-  };
+  }
 
-
-  const getServices = () => {
+  function getServices() {
     return Array.isArray(window.WOND_PRICE_ITEMS)
       ? window.WOND_PRICE_ITEMS
       : [];
-  };
+  }
 
-
-  const getPrices = () => {
+  function getPrices() {
     return window.WOND_LOCAL_PRICES || {};
-  };
+  }
 
+  function getLang() {
+    const fromWindow =
+      window.WOND_LANG ||
+      window.WOND_LANGUAGE ||
+      window.currentLang;
 
-  /* =========================================================
-     LANGUAGE
-     ========================================================= */
-
-  function getLanguage() {
-    const supported =
-      Array.isArray(window.WOND_LANGS) &&
-      window.WOND_LANGS.length
-        ? window.WOND_LANGS
-        : [
-            "uk",
-            "cs",
-            "sl",
-            "sk",
-            "de",
-            "en",
-            "hr",
-            "sr",
-            "it",
-            "hu",
-            "pl",
-            "ro"
-          ];
-
-    const query =
-      new URLSearchParams(location.search)
-        .get("lang");
-
-    if (query && supported.includes(query)) {
-      return query;
+    if (fromWindow) {
+      return String(fromWindow).toLowerCase();
     }
 
-    const saved =
-      localStorage.getItem("wond-lang");
+    const saved = localStorage.getItem("wond-lang");
 
-    if (saved && supported.includes(saved)) {
-      return saved;
+    if (saved) {
+      return String(saved).toLowerCase();
     }
 
-    const browser =
-      (navigator.language || "cs")
-        .slice(0, 2);
+    const query = new URLSearchParams(location.search).get("lang");
 
-    if (supported.includes(browser)) {
-      return browser;
+    if (query) {
+      return String(query).toLowerCase();
+    }
+
+    const browser = navigator.language || "";
+
+    if (browser) {
+      return browser.split("-")[0].toLowerCase();
     }
 
     return "cs";
   }
 
-
-  function getUiText(key) {
-    const lang = getLanguage();
-
-    const ui = {
-      uk: {
-        country: "Країна",
-        price: "Ціна",
-        service: "Послуга",
-        without: "Без ПДВ",
-        with: "З ПДВ",
-        both: "Обидва",
-        by_scope: "за обсягом"
-      },
-
-      cs: {
-        country: "Země",
-        price: "Cena",
-        service: "Služba",
-        without: "Bez DPH",
-        with: "Včetně DPH",
-        both: "Obojí",
-        by_scope: "dle rozsahu"
-      },
-
-      sl: {
-        country: "Država",
-        price: "Cena",
-        service: "Storitev",
-        without: "Brez DDV",
-        with: "Z DDV",
-        both: "Oboje",
-        by_scope: "glede na obseg"
-      },
-
-      sk: {
-        country: "Krajina",
-        price: "Cena",
-        service: "Služba",
-        without: "Bez DPH",
-        with: "S DPH",
-        both: "Oboje",
-        by_scope: "podľa rozsahu"
-      },
-
-      de: {
-        country: "Land",
-        price: "Preis",
-        service: "Leistung",
-        without: "Ohne MwSt.",
-        with: "Inkl. MwSt.",
-        both: "Beide",
-        by_scope: "nach Umfang"
-      },
-
-      en: {
-        country: "Country",
-        price: "Price",
-        service: "Service",
-        without: "Without VAT",
-        with: "With VAT",
-        both: "Both",
-        by_scope: "depending on scope"
-      },
-
-      hr: {
-        country: "Država",
-        price: "Cijena",
-        service: "Usluga",
-        without: "Bez PDV-a",
-        with: "S PDV-om",
-        both: "Oboje",
-        by_scope: "prema opsegu"
-      },
-
-      sr: {
-        country: "Država",
-        price: "Cena",
-        service: "Usluga",
-        without: "Bez PDV-a",
-        with: "Sa PDV-om",
-        both: "Oboje",
-        by_scope: "prema obimu"
-      },
-
-      it: {
-        country: "Paese",
-        price: "Prezzo",
-        service: "Servizio",
-        without: "Senza IVA",
-        with: "Con IVA",
-        both: "Entrambi",
-        by_scope: "in base all'ambito"
-      },
-
-      hu: {
-        country: "Ország",
-        price: "Ár",
-        service: "Szolgáltatás",
-        without: "ÁFA nélkül",
-        with: "ÁFÁ-val",
-        both: "Mindkettő",
-        by_scope: "munkaterülettől függően"
-      },
-
-      pl: {
-        country: "Kraj",
-        price: "Cena",
-        service: "Usługa",
-        without: "Bez VAT",
-        with: "Z VAT",
-        both: "Obie",
-        by_scope: "według zakresu"
-      },
-
-      ro: {
-        country: "Țara",
-        price: "Preț",
-        service: "Serviciu",
-        without: "Fără TVA",
-        with: "Cu TVA",
-        both: "Ambele",
-        by_scope: "în funcție de amploare"
-      }
+  function normalizeLang(lang) {
+    const aliases = {
+      uk: "uk",
+      ua: "uk",
+      cs: "cs",
+      sk: "sk",
+      sl: "sl",
+      de: "de",
+      en: "en",
+      hr: "hr",
+      sr: "sr",
+      it: "it",
+      hu: "hu",
+      pl: "pl",
+      ro: "ro"
     };
 
+    return aliases[String(lang || "").toLowerCase()] || "cs";
+  }
+
+  function getLanguage() {
+    return normalizeLang(getLang());
+  }
+
+  const UI = {
+    uk: {
+      country: "Країна",
+      price: "Ціна",
+      without: "Без ПДВ",
+      with: "З ПДВ",
+      both: "Без ПДВ / З ПДВ",
+      vat: "ПДВ",
+      service: "Послуга"
+    },
+
+    cs: {
+      country: "Země",
+      price: "Cena",
+      without: "Bez DPH",
+      with: "S DPH",
+      both: "Bez DPH / S DPH",
+      vat: "DPH",
+      service: "Služba"
+    },
+
+    sl: {
+      country: "Država",
+      price: "Cena",
+      without: "Brez DDV",
+      with: "Z DDV",
+      both: "Brez DDV / Z DDV",
+      vat: "DDV",
+      service: "Storitev"
+    },
+
+    sk: {
+      country: "Krajina",
+      price: "Cena",
+      without: "Bez DPH",
+      with: "S DPH",
+      both: "Bez DPH / S DPH",
+      vat: "DPH",
+      service: "Služba"
+    },
+
+    de: {
+      country: "Land",
+      price: "Preis",
+      without: "Ohne MwSt.",
+      with: "Mit MwSt.",
+      both: "Ohne MwSt. / Mit MwSt.",
+      vat: "MwSt.",
+      service: "Leistung"
+    },
+
+    en: {
+      country: "Country",
+      price: "Price",
+      without: "Without VAT",
+      with: "With VAT",
+      both: "Without VAT / With VAT",
+      vat: "VAT",
+      service: "Service"
+    },
+
+    hr: {
+      country: "Država",
+      price: "Cijena",
+      without: "Bez PDV-a",
+      with: "S PDV-om",
+      both: "Bez PDV-a / S PDV-om",
+      vat: "PDV",
+      service: "Usluga"
+    },
+
+    sr: {
+      country: "Država",
+      price: "Cena",
+      without: "Bez PDV-a",
+      with: "Sa PDV-om",
+      both: "Bez PDV-a / Sa PDV-om",
+      vat: "PDV",
+      service: "Usluga"
+    },
+
+    it: {
+      country: "Paese",
+      price: "Prezzo",
+      without: "Senza IVA",
+      with: "Con IVA",
+      both: "Senza IVA / Con IVA",
+      vat: "IVA",
+      service: "Servizio"
+    },
+
+    hu: {
+      country: "Ország",
+      price: "Ár",
+      without: "ÁFA nélkül",
+      with: "ÁFÁ-val",
+      both: "ÁFA nélkül / ÁFÁ-val",
+      vat: "ÁFA",
+      service: "Szolgáltatás"
+    },
+
+    pl: {
+      country: "Kraj",
+      price: "Cena",
+      without: "Bez VAT",
+      with: "Z VAT",
+      both: "Bez VAT / Z VAT",
+      vat: "VAT",
+      service: "Usługa"
+    },
+
+    ro: {
+      country: "Țara",
+      price: "Preț",
+      without: "Fără TVA",
+      with: "Cu TVA",
+      both: "Fără TVA / Cu TVA",
+      vat: "TVA",
+      service: "Serviciu"
+    }
+  };
+
+  function text(key) {
+    const lang = getLanguage();
+
     return (
-      ui[lang]?.[key] ||
-      ui.en[key] ||
+      UI[lang]?.[key] ||
+      UI.cs[key] ||
       key
     );
   }
 
+  function countryName(country) {
+    if (!country) return "";
 
-  /* =========================================================
-     TRANSLATIONS FROM prices.js
-     ========================================================= */
+    const code = String(
+      country.code ||
+      country.country_code ||
+      ""
+    ).toUpperCase();
 
-  function getServiceName(
-    itemKey,
-    defaultName
-  ) {
+    const names = window.WOND_COUNTRY_NAMES || {};
+
     const lang = getLanguage();
+
+    if (names[lang]?.[code]) {
+      return names[lang][code];
+    }
+
+    if (names[code]?.[lang]) {
+      return names[code][lang];
+    }
+
+    if (country.name) {
+      return country.name;
+    }
+
+    return code;
+  }
+
+  function serviceName(item) {
+    if (!item) return "";
+
+    const key =
+      item.key ||
+      item.id ||
+      item.code ||
+      "";
 
     const translations =
       window.WOND_PRICE_TRANSLATIONS || {};
 
-    return (
-      translations?.[itemKey]?.[lang] ||
-      translations?.[itemKey]?.en ||
-      defaultName ||
-      itemKey
-    );
-  }
-
-
-  function getCategoryName(category) {
     const lang = getLanguage();
 
-    const names =
-      window.WOND_CATEGORY_NAMES || {};
+    /*
+     * Підтримка обох можливих структур:
+     *
+     * translations[lang][key]
+     * translations[key][lang]
+     */
+
+    if (
+      translations[lang] &&
+      typeof translations[lang] === "object" &&
+      translations[lang][key] != null
+    ) {
+      return translations[lang][key];
+    }
+
+    if (
+      translations[key] &&
+      typeof translations[key] === "object" &&
+      translations[key][lang] != null
+    ) {
+      return translations[key][lang];
+    }
 
     return (
-      names?.[lang]?.[category] ||
-      names?.en?.[category] ||
-      category
+      item.name ||
+      item.title ||
+      item.label ||
+      key
     );
   }
-
-
-  function getCountryName(country) {
-    const lang = getLanguage();
-
-    const names =
-      window.WOND_COUNTRY_NAMES || {};
-
-    return (
-      names?.[lang]?.[country.code] ||
-      names?.en?.[country.code] ||
-      country.name ||
-      country.code
-    );
-  }
-
-
-  /* =========================================================
-     COUNTRY
-     ========================================================= */
-
-  function normalizeCountryCode(code) {
-    return String(
-      code || ""
-    )
-      .trim()
-      .toUpperCase();
-  }
-
 
   function getCountry(code) {
-    const normalized =
-      normalizeCountryCode(code);
-
-    const countries =
-      getCountries();
+    const countries = getCountries();
 
     return (
       countries.find(
-        country =>
-          normalizeCountryCode(
-            country.code
-          ) === normalized
-      ) ||
-      countries.find(
-        country =>
-          normalizeCountryCode(
-            country.code
-          ) === DEFAULT_COUNTRY
+        c =>
+          String(c.code || "").toUpperCase() ===
+          String(code || "").toUpperCase()
       ) ||
       countries[0] ||
       null
     );
   }
 
+  function getVatRate(code) {
+    const country = getCountry(code);
 
-  /* =========================================================
-     VAT
-     ========================================================= */
-
-  function getVatRate(countryCode) {
-    const code =
-      normalizeCountryCode(
-        countryCode
-      );
+    const countryCode = String(
+      code ||
+      country?.code ||
+      ""
+    ).toUpperCase();
 
     /*
-     * VAT_RATES is intentionally
-     * the primary source.
-     *
-     * This means an incorrect/null/zero
-     * vat_rate in Supabase cannot break
-     * the calculation.
+     * Спочатку використовуємо ставку цього файлу.
      */
-
     if (
       Object.prototype.hasOwnProperty.call(
         VAT_RATES,
-        code
+        countryCode
       )
     ) {
-      return VAT_RATES[code];
+      return VAT_RATES[countryCode];
     }
 
-    const country =
-      getCountry(code);
-
-    if (!country) {
-      return 0;
-    }
-
+    /*
+     * Якщо ставки немає — беремо vat з prices.js.
+     */
     const dbVat =
-      Number(
-        country.vat_rate ??
-        country.vat ??
-        0
-      );
+      Number(country?.vat);
 
     if (
       Number.isFinite(dbVat) &&
-      dbVat > 0
+      dbVat >= 0
     ) {
       return dbVat;
     }
@@ -413,803 +367,535 @@
     return 0;
   }
 
+  function getVatPercent(code) {
+    return getVatRate(code) * 100;
+  }
 
-  function getVatPercent(countryCode) {
-    return Math.round(
-      getVatRate(countryCode) * 100
+  function grossFromNet(net, vatRate) {
+    const value = Number(net);
+
+    if (!Number.isFinite(value)) {
+      return 0;
+    }
+
+    return value * (1 + vatRate);
+  }
+
+  function getCurrency(country) {
+    return (
+      country?.currency ||
+      country?.currency_code ||
+      "EUR"
     );
   }
 
+  function formatPrice(value, currency) {
+    const number = Number(value);
 
-  function calculateGross(
-    net,
-    countryCode
-  ) {
-    const value =
-      Number(net) || 0;
+    if (!Number.isFinite(number)) {
+      return "—";
+    }
 
-    const vat =
-      getVatRate(countryCode);
-
-    return value * (1 + vat);
+    try {
+      return new Intl.NumberFormat(
+        getLanguage() === "cs"
+          ? "cs-CZ"
+          : getLanguage() === "uk"
+            ? "uk-UA"
+            : getLanguage() === "de"
+              ? "de-DE"
+              : getLanguage() === "pl"
+                ? "pl-PL"
+                : getLanguage() === "ro"
+                  ? "ro-RO"
+                  : getLanguage() === "hu"
+                    ? "hu-HU"
+                    : "en-US",
+        {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        }
+      ).format(number) + " " + currency;
+    } catch {
+      return number.toFixed(2) + " " + currency;
+    }
   }
 
+  function getSelectedCountry() {
+    const select = $("#price-country");
 
-  /* =========================================================
-     NUMBER FORMAT
-     ========================================================= */
-
-  function formatPrice(
-    value,
-    currency
-  ) {
-    const lang =
-      getLanguage();
-
-    const number =
-      Number(value) || 0;
-
-    const decimals =
-      currency === "HUF"
-        ? 0
-        : 2;
+    if (select?.value) {
+      return getCountry(select.value);
+    }
 
     return (
-      new Intl.NumberFormat(
-        lang,
-        {
-          minimumFractionDigits:
-            decimals,
-
-          maximumFractionDigits:
-            decimals
-        }
-      ).format(number) +
-      " " +
-      currency
+      getCountry(
+        localStorage.getItem("wond-price-country")
+      ) ||
+      getCountry(DEFAULT_COUNTRY)
     );
   }
 
+  function getMode() {
+    const select = $("#vat-mode");
 
-  /* =========================================================
-     COUNTRY SELECT
-     ========================================================= */
+    if (
+      select?.value === "net" ||
+      select?.value === "gross" ||
+      select?.value === "both"
+    ) {
+      return select.value;
+    }
+
+    return (
+      localStorage.getItem("wond-vat-mode") ||
+      DEFAULT_MODE
+    );
+  }
+
+  function getLocalPrice(countryCode, itemKey) {
+    const prices = getPrices();
+
+    /*
+     * Структура:
+     * WOND_LOCAL_PRICES[COUNTRY][ITEM]
+     */
+    if (
+      prices[countryCode] &&
+      prices[countryCode][itemKey] != null
+    ) {
+      return Number(
+        prices[countryCode][itemKey]
+      );
+    }
+
+    /*
+     * Якщо структура нижче:
+     * WOND_LOCAL_PRICES[ITEM][COUNTRY]
+     */
+    if (
+      prices[itemKey] &&
+      typeof prices[itemKey] === "object" &&
+      prices[itemKey][countryCode] != null
+    ) {
+      return Number(
+        prices[itemKey][countryCode]
+      );
+    }
+
+    return null;
+  }
 
   function renderCountrySelect() {
-    const select =
-      $("#price-country");
+    const select = $("#price-country");
 
-    if (!select) {
-      return;
-    }
+    if (!select) return;
 
-    const countries =
-      getCountries();
+    const countries = getCountries();
 
     if (!countries.length) {
+      select.innerHTML = "";
       return;
     }
-
-    const saved =
-      normalizeCountryCode(
-        localStorage.getItem(
-          "wond-country"
-        ) || DEFAULT_COUNTRY
-      );
 
     const oldValue =
-      normalizeCountryCode(
-        select.value
-      );
-
-    const selected =
-      oldValue ||
-      saved ||
+      select.value ||
+      localStorage.getItem("wond-price-country") ||
       DEFAULT_COUNTRY;
 
-    select.innerHTML = "";
+    select.innerHTML = countries
+      .map(country => {
+        const code = String(
+          country.code || ""
+        ).toUpperCase();
 
-    countries
-      .filter(
-        country =>
-          country.active !== false
-      )
-      .forEach(country => {
+        const currency = getCurrency(country);
 
-        const code =
-          normalizeCountryCode(
-            country.code
-          );
+        const selected =
+          code === String(oldValue).toUpperCase()
+            ? " selected"
+            : "";
 
-        if (!code) {
-          return;
-        }
+        return `
+          <option value="${escapeHtml(code)}"${selected}>
+            ${escapeHtml(countryName(country))}
+            (${escapeHtml(currency)})
+          </option>
+        `;
+      })
+      .join("");
 
-        const option =
-          document.createElement(
-            "option"
-          );
+    const selectedCountry =
+      getCountry(oldValue) ||
+      countries[0];
 
-        option.value = code;
+    if (selectedCountry) {
+      select.value = String(
+        selectedCountry.code
+      ).toUpperCase();
 
-        option.textContent =
-          getCountryName(country);
-
-        select.appendChild(option);
-      });
-
-
-    const canSelect =
-      [...select.options].some(
-        option =>
-          option.value === selected
+      localStorage.setItem(
+        "wond-price-country",
+        select.value
       );
-
-
-    if (canSelect) {
-      select.value = selected;
-
-    } else if (
-      [...select.options].some(
-        option =>
-          option.value === DEFAULT_COUNTRY
-      )
-    ) {
-      select.value =
-        DEFAULT_COUNTRY;
-
-    } else if (
-      select.options.length
-    ) {
-      select.selectedIndex = 0;
     }
-
-
-    localStorage.setItem(
-      "wond-country",
-      select.value
-    );
-
-
-    updateVatModeLabels();
   }
-
-
-  /* =========================================================
-     VAT MODE
-     ========================================================= */
 
   function updateVatModeLabels() {
-    const select =
-      $("#vat-mode");
+    const select = $("#vat-mode");
 
-    if (!select) {
-      return;
-    }
+    if (!select) return;
 
-    const net =
-      select.querySelector(
-        'option[value="net"]'
-      );
+    const current = select.value || DEFAULT_MODE;
 
-    const gross =
-      select.querySelector(
-        'option[value="gross"]'
-      );
+    select.innerHTML = `
+      <option value="net">
+        ${escapeHtml(text("without"))}
+      </option>
 
-    const both =
-      select.querySelector(
-        'option[value="both"]'
-      );
+      <option value="gross">
+        ${escapeHtml(text("with"))}
+      </option>
 
-    if (net) {
-      net.textContent =
-        getUiText("without");
-    }
+      <option value="both">
+        ${escapeHtml(text("both"))}
+      </option>
+    `;
 
-    if (gross) {
-      gross.textContent =
-        getUiText("with");
-    }
-
-    if (both) {
-      both.textContent =
-        getUiText("both");
-    }
+    select.value = current;
   }
 
-
-  function restoreVatMode() {
-    const select =
-      $("#vat-mode");
-
-    if (!select) {
-      return;
-    }
-
-    const saved =
-      localStorage.getItem(
-        "wond-vat-mode"
-      );
-
-    if (
-      saved === "net" ||
-      saved === "gross" ||
-      saved === "both"
-    ) {
-      select.value = saved;
-    } else {
-      select.value =
-        DEFAULT_MODE;
-    }
-
-    updateVatModeLabels();
+  function getCategory(item) {
+    return (
+      item?.category ||
+      item?.group ||
+      "other"
+    );
   }
-
-
-  /* =========================================================
-     PRICE
-     ========================================================= */
-
-  function getLocalPrice(
-    countryCode,
-    itemKey
-  ) {
-    const prices =
-      getPrices();
-
-    const code =
-      normalizeCountryCode(
-        countryCode
-      );
-
-    const value =
-      prices?.[code]?.[itemKey];
-
-    const number =
-      Number(value);
-
-    return Number.isFinite(number)
-      ? number
-      : 0;
-  }
-
-
-  /* =========================================================
-     RENDER
-     ========================================================= */
 
   function renderPrices() {
-    const grid =
-      $("#price-grid");
+    const grid = $("#price-grid");
 
-    if (!grid) {
-      return;
-    }
+    if (!grid) return;
 
-    const countries =
-      getCountries();
-
-    const services =
-      getServices();
-
-    if (
-      !countries.length ||
-      !services.length
-    ) {
-      grid.innerHTML = "";
-      return;
-    }
-
-
-    let countryCode =
-      normalizeCountryCode(
-        $("#price-country")?.value ||
-        localStorage.getItem(
-          "wond-country"
-        ) ||
-        DEFAULT_COUNTRY
-      );
-
-
-    let country =
-      getCountry(countryCode);
-
+    const country = getSelectedCountry();
 
     if (!country) {
       grid.innerHTML = "";
       return;
     }
 
+    const countryCode =
+      String(country.code || "").toUpperCase();
 
-    countryCode =
-      normalizeCountryCode(
-        country.code
-      );
-
-
-    const mode =
-      $("#vat-mode")?.value ||
-      localStorage.getItem(
-        "wond-vat-mode"
-      ) ||
-      DEFAULT_MODE;
-
+    const currency = getCurrency(country);
 
     const vatRate =
       getVatRate(countryCode);
 
+    const mode = getMode();
 
-    /*
-     * Group services by category.
-     */
+    const services = getServices();
+
+    if (!services.length) {
+      grid.innerHTML = `
+        <div class="price-empty">
+          Немає цін
+        </div>
+      `;
+      return;
+    }
 
     const groups = {};
 
-    services
-      .filter(
-        service =>
-          service.active !== false
-      )
-      .forEach(service => {
+    services.forEach(item => {
+      const category = getCategory(item);
 
-        const category =
-          service.category ||
-          "other";
+      if (!groups[category]) {
+        groups[category] = [];
+      }
 
-        if (!groups[category]) {
-          groups[category] = [];
+      groups[category].push(item);
+    });
+
+    let html = "";
+
+    Object.keys(groups).forEach(category => {
+      html += `
+        <section class="price-category"
+                 data-category="${escapeHtml(category)}">
+
+          <div class="price-category-title">
+            ${escapeHtml(
+              categoryName(category)
+            )}
+          </div>
+
+          <div class="price-category-items">
+      `;
+
+      groups[category].forEach(item => {
+        const key =
+          item.key ||
+          item.id ||
+          item.code;
+
+        const net =
+          getLocalPrice(
+            countryCode,
+            key
+          );
+
+        if (
+          net === null ||
+          !Number.isFinite(net)
+        ) {
+          return;
         }
 
-        groups[category].push(
-          service
-        );
+        const gross =
+          grossFromNet(
+            net,
+            vatRate
+          );
+
+        let priceHtml = "";
+
+        if (mode === "net") {
+          priceHtml = `
+            <div class="price-value">
+              ${escapeHtml(
+                formatPrice(
+                  net,
+                  currency
+                )
+              )}
+            </div>
+          `;
+        }
+
+        if (mode === "gross") {
+          priceHtml = `
+            <div class="price-value">
+              ${escapeHtml(
+                formatPrice(
+                  gross,
+                  currency
+                )
+              )}
+            </div>
+          `;
+        }
+
+        if (mode === "both") {
+          priceHtml = `
+            <div class="price-value price-both">
+              <span>
+                ${escapeHtml(
+                  formatPrice(
+                    net,
+                    currency
+                  )
+                )}
+              </span>
+
+              <span>
+                ${escapeHtml(
+                  formatPrice(
+                    gross,
+                    currency
+                  )
+                )}
+              </span>
+            </div>
+          `;
+        }
+
+        html += `
+          <article class="price-item"
+                   data-service="${escapeHtml(key)}">
+
+            <div class="price-name">
+              ${escapeHtml(
+                serviceName(item)
+              )}
+            </div>
+
+            ${priceHtml}
+
+          </article>
+        `;
       });
 
-
-    grid.innerHTML = "";
-
-
-    /*
-     * Optional information about
-     * selected country / VAT.
-     */
-
-    grid.dataset.country =
-      countryCode;
-
-    grid.dataset.currency =
-      country.currency || "";
-
-    grid.dataset.vat =
-      String(vatRate);
-
-
-    Object.entries(groups)
-      .forEach(
-        ([category, rows]) => {
-
-          const card =
-            document.createElement(
-              "div"
-            );
-
-          card.className =
-            "price-card";
-
-
-          const title =
-            document.createElement(
-              "h3"
-            );
-
-          title.textContent =
-            getCategoryName(
-              category
-            );
-
-
-          const table =
-            document.createElement(
-              "table"
-            );
-
-
-          const thead =
-            document.createElement(
-              "thead"
-            );
-
-
-          const header =
-            document.createElement(
-              "tr"
-            );
-
-
-          const serviceHeader =
-            document.createElement(
-              "th"
-            );
-
-          serviceHeader.textContent =
-            getUiText("service");
-
-
-          const priceHeader =
-            document.createElement(
-              "th"
-            );
-
-          priceHeader.textContent =
-            getUiText("price");
-
-
-          header.append(
-            serviceHeader,
-            priceHeader
-          );
-
-
-          thead.appendChild(header);
-
-
-          const tbody =
-            document.createElement(
-              "tbody"
-            );
-
-
-          rows.forEach(
-            service => {
-
-              const tr =
-                document.createElement(
-                  "tr"
-                );
-
-
-              const nameCell =
-                document.createElement(
-                  "td"
-                );
-
-
-              const priceCell =
-                document.createElement(
-                  "td"
-                );
-
-
-              nameCell.textContent =
-                getServiceName(
-                  service.item_key,
-                  service.default_name
-                );
-
-
-              const net =
-                getLocalPrice(
-                  countryCode,
-                  service.item_key
-                );
-
-
-              const unit =
-                service.unit || "";
-
-
-              /*
-               * Special "report" service.
-               */
-
-              if (
-                service.item_key ===
-                  "report" &&
-                net === 0
-              ) {
-
-                priceCell.textContent =
-                  getUiText(
-                    "by_scope"
-                  );
-
-              } else {
-
-                const gross =
-                  calculateGross(
-                    net,
-                    countryCode
-                  );
-
-
-                if (
-                  mode === "gross"
-                ) {
-
-                  priceCell.textContent =
-                    formatPrice(
-                      gross,
-                      country.currency
-                    ) +
-                    unit;
-
-
-                } else if (
-                  mode === "both"
-                ) {
-
-                  priceCell.textContent =
-                    formatPrice(
-                      net,
-                      country.currency
-                    ) +
-                    unit +
-                    " / " +
-                    formatPrice(
-                      gross,
-                      country.currency
-                    ) +
-                    unit;
-
-
-                } else {
-
-                  priceCell.textContent =
-                    formatPrice(
-                      net,
-                      country.currency
-                    ) +
-                    unit;
-                }
-              }
-
-
-              tr.append(
-                nameCell,
-                priceCell
-              );
-
-
-              tbody.appendChild(tr);
-            }
-          );
-
-
-          table.append(
-            thead,
-            tbody
-          );
-
-
-          card.append(
-            title,
-            table
-          );
-
-
-          grid.appendChild(card);
-        }
-      );
-
-
-    /*
-     * Helpful debug information in DOM.
-     */
-
-    grid.setAttribute(
-      "data-vat-percent",
-      String(
-        getVatPercent(
-          countryCode
-        )
-      )
+      html += `
+          </div>
+        </section>
+      `;
+    });
+
+    grid.innerHTML = html;
+
+    grid.dataset.country = countryCode;
+    grid.dataset.currency = currency;
+    grid.dataset.vat = String(
+      getVatPercent(countryCode)
     );
+    grid.dataset.mode = mode;
   }
 
+  function categoryName(category) {
+    const names =
+      window.WOND_CATEGORY_NAMES || {};
 
-  /* =========================================================
-     EVENTS
-     ========================================================= */
+    const lang = getLanguage();
+
+    if (
+      names[lang] &&
+      names[lang][category]
+    ) {
+      return names[lang][category];
+    }
+
+    if (
+      names[category] &&
+      typeof names[category] === "object" &&
+      names[category][lang]
+    ) {
+      return names[category][lang];
+    }
+
+    const fallback = {
+      electro: "Elektro",
+      plumbing: "Voda",
+      panel: "Rozvaděče",
+      inspection: "Kontrola",
+      travel: "Doprava",
+      other: "Ostatní"
+    };
+
+    return fallback[category] || category;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
   function bindEvents() {
-
-    const countrySelect =
-      $("#price-country");
-
+    const country = $("#price-country");
 
     if (
-      countrySelect &&
-      !countrySelect.dataset.wondVatBound
+      country &&
+      !country.dataset.wondBound
     ) {
-
-      countrySelect.dataset.wondVatBound =
-        "true";
-
-
-      countrySelect.addEventListener(
+      country.addEventListener(
         "change",
-        function () {
-
-          const code =
-            normalizeCountryCode(
-              this.value
-            );
-
-
+        () => {
           localStorage.setItem(
-            "wond-country",
-            code
+            "wond-price-country",
+            country.value
           );
-
-
-          /*
-           * Re-render immediately.
-           */
 
           renderPrices();
         }
       );
+
+      country.dataset.wondBound = "1";
     }
 
-
-    const vatMode =
-      $("#vat-mode");
-
+    const vat = $("#vat-mode");
 
     if (
-      vatMode &&
-      !vatMode.dataset.wondVatBound
+      vat &&
+      !vat.dataset.wondBound
     ) {
-
-      vatMode.dataset.wondVatBound =
-        "true";
-
-
-      vatMode.addEventListener(
+      vat.addEventListener(
         "change",
-        function () {
+        () => {
+          localStorage.setItem(
+            "wond-vat-mode",
+            vat.value
+          );
 
-          const mode =
-            this.value;
+          renderPrices();
+        }
+      );
 
+      vat.dataset.wondBound = "1";
+    }
 
+    /*
+     * Підключення до головної системи мов.
+     *
+     * app.js може викликати:
+     *
+     * window.dispatchEvent(
+     *   new CustomEvent("wond:language-change", {
+     *     detail: { lang: "uk" }
+     *   })
+     * );
+     */
+
+    if (!window.WOND_PRICE_VAT_LANGUAGE_BOUND) {
+      window.WOND_PRICE_VAT_LANGUAGE_BOUND = true;
+
+      window.addEventListener(
+        "wond:language-change",
+        event => {
           if (
-            mode === "net" ||
-            mode === "gross" ||
-            mode === "both"
+            event?.detail?.lang
           ) {
-
-            localStorage.setItem(
-              "wond-vat-mode",
-              mode
-            );
+            window.WOND_LANG =
+              event.detail.lang;
           }
 
-
+          renderCountrySelect();
+          updateVatModeLabels();
           renderPrices();
         }
       );
     }
   }
 
-
-  /* =========================================================
-     PUBLIC API
-     ========================================================= */
-
-  window.WOND_PRICE_VAT = {
-
-    render:
-      renderPrices,
-
-    renderCountrySelect:
-      renderCountrySelect,
-
-    getCountry:
-      getCountry,
-
-    getVatRate:
-      getVatRate,
-
-    getVatPercent:
-      getVatPercent,
-
-    calculateGross:
-      calculateGross,
-
-    getLocalPrice:
-      getLocalPrice,
-
-    formatPrice:
-      formatPrice
-  };
-
-
-  /* =========================================================
-     INITIALIZATION
-     ========================================================= */
-
-  function init() {
-
+  function render() {
     renderCountrySelect();
-
-    restoreVatMode();
-
-    bindEvents();
-
+    updateVatModeLabels();
     renderPrices();
   }
 
+  window.WOND_PRICE_VAT = {
+    render,
+    renderPrices,
+    renderCountrySelect,
+    updateVatModeLabels,
+    getCountry,
+    getVatRate,
+    getVatPercent,
+    grossFromNet,
+    getLocalPrice,
+    formatPrice
+  };
 
-  /*
-   * prices.js must be loaded first.
-   */
+  function init() {
+    render();
+    bindEvents();
+  }
 
   if (
     document.readyState ===
     "loading"
   ) {
-
     document.addEventListener(
       "DOMContentLoaded",
-      init
+      init,
+      { once: true }
     );
-
   } else {
-
     init();
   }
-
-
-  /*
-   * Re-render when another part of the
-   * application changes language.
-   *
-   * We intentionally use a MutationObserver
-   * only for language changes, not for
-   * price-grid changes.
-   */
-
-  let lastLanguage =
-    getLanguage();
-
-
-  setInterval(
-    () => {
-
-      const currentLanguage =
-        getLanguage();
-
-      if (
-        currentLanguage !==
-        lastLanguage
-      ) {
-
-        lastLanguage =
-          currentLanguage;
-
-        renderCountrySelect();
-        updateVatModeLabels();
-        renderPrices();
-      }
-
-    },
-    500
-  );
-
-
-  /*
-   * Console test:
-   *
-   * WOND_PRICE_VAT.getVatRate("CZ")
-   * => 0.21
-   *
-   * WOND_PRICE_VAT.calculateGross(450, "CZ")
-   * => 544.5
-   *
-   * WOND_PRICE_VAT.getVatPercent("DE")
-   * => 19
-   */
 
 })();
