@@ -59,16 +59,12 @@
   $('#save-translations').onclick=async()=>{const l=$('#translation-lang').value;const rows=$$('#translation-editor input').map(i=>({item_key:i.dataset.key,lang:l,name:i.value.trim()})).filter(x=>x.name);const {error}=await sb.from('service_translations').upsert(rows,{onConflict:'item_key,lang'});msg(error?error.message:t('saved'),!!error);if(!error){translations={...translations};rows.forEach(r=>(translations[r.item_key]??={})[r.lang]=r.name);renderPrices();}};
   async function renderUsers(){const {data}=await sb.from('profiles').select('id,email,role,created_at').order('created_at');const box=$('#users-list');box.innerHTML='';(data||[]).forEach(u=>{const row=document.createElement('div');row.className='admin-item';row.innerHTML=`<div class="admin-item-body"><strong>${esc(u.email)}</strong><span class="muted">${esc(u.role)}</span></div>`;if(u.role!=='owner'){const b=document.createElement('button');b.className='btn ghost dark';b.textContent=t('delete');b.onclick=async()=>{const r=await sb.functions.invoke('delete-admin',{body:{user_id:u.id}});msg(r.error?r.error.message:t('saved'),!!r.error);await renderUsers();};row.querySelector('.admin-item-body').append(b);}box.append(row);});}
   $('#add-admin').onclick=async()=>{const email=$('#new-admin-email').value.trim(),password=$('#new-admin-password').value;if(!email||password.length<8)return msg('Enter e-mail and a password of at least 8 characters.',true);const r=await sb.functions.invoke('create-admin',{body:{email,password}});msg(r.error?r.error.message:t('saved'),!!r.error);if(!r.error){$('#new-admin-email').value='';$('#new-admin-password').value='';await renderUsers();}};
-  function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-  init();
+  function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[init();
 })();
 (() => {
   "use strict";
 
-  const DEFAULT_COUNTRY = "CZ";
-  const DEFAULT_MODE = "net";
-
-  /*
+ 
    * ПДВ у відсотках.
    * Код нижче сам перетворює 21 -> 0.21.
    */
