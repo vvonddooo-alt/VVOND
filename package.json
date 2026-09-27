@@ -1,0 +1,8 @@
+{
+  "name":"wond-app",
+  "version":"1.0.0",
+  "description":"WOND Elektro · Voda · Montáže",
+  "main":"electron-main.cjs",
+  "scripts":{"start":"electron .","dist:win":"electron-builder --win nsis portable","dist:android":"npx cap sync android && cd android && ./gradlew assembleDebug"},
+  "build":{"appId":"si.wond.app","productName":"WOND","files":["**/*","!node_modules/**/*"],"win":{"target":["nsis","portable"],"artifactName":"WOND-${version}-${arch}.${ext}"}}
+}
