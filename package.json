@@ -1,0 +1,38 @@
+{
+  "name": "wond-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WOND Elektro · Voda · Montáže",
+  "main": "electron-main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis portable",
+    "check": "node --check app.js && node --check translations.js && node --check prices.js && node --check supabase-config.js && node --check electron-main.cjs"
+  },
+  "dependencies": {
+    "electron": "^38.0.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "si.wond.app",
+    "productName": "WOND",
+    "files": [
+      "**/*",
+      "!node_modules/**/*",
+      "!desktop-exe/target/**/*",
+      "!mobile-apk/android/.gradle/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "WOND-${version}-${arch}.${ext}"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
