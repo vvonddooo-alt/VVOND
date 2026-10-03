@@ -1,1 +1,106 @@
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WOND Admin</title><link rel="stylesheet" href="styles.css"><style>.admin-wrap{max-width:1100px;margin:0 auto;padding:55px 5%}.admin-shell{background:#fff;border:1px solid #e1e7eb;border-radius:20px;padding:28px;box-shadow:0 15px 45px rgba(0,0,0,.06)}.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.admin-tabs button{border:1px solid #ccd7dc;background:#fff;padding:10px 14px;border-radius:10px;font-weight:800}.admin-tabs button.active{background:#101c25;color:#fff}.admin-pane{display:none}.admin-pane.active{display:block}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field input,.field select{padding:12px;border:1px solid #ccd7dc;border-radius:10px;font:inherit}.save{margin-top:16px;border:0;background:#ffd21a;color:#101820;padding:12px 18px;border-radius:10px;font-weight:900;cursor:pointer}.danger{background:#b23b2d;color:#fff}.status{margin:12px 0;color:#52636b;min-height:20px}.list{display:grid;gap:10px;margin-top:18px}.list-item{border:1px solid #e0e7eb;border-radius:12px;padding:14px;display:flex;justify-content:space-between;gap:15px;align-items:center}.small{font-size:12px;color:#68767d}@media(max-width:700px){.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}</style></head><body><header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>WOND</span><small>ADMIN</small></a><div class="top-actions"><a class="admin-pill" href="index.html">Web</a></div></header><main class="admin-wrap"><div id="login" class="admin-shell"><span class="eyebrow dark">SECURE ADMIN</span><h1>Administrace WOND</h1><p>Vstup přes Supabase Auth. Heslo není uložené v JavaScriptu.</p><div class="form-grid"><label class="field"><span>E-mail</span><input id="email" type="email" autocomplete="username"></label><label class="field"><span>Heslo</span><input id="password" type="password" autocomplete="current-password"></label></div><button id="loginBtn" class="save">Přihlásit</button><div id="loginStatus" class="status"></div></div><div id="app" class="admin-shell" hidden><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><div><span class="eyebrow dark">ADMINISTRACE</span><h1 style="margin:5px 0">WOND</h1><div id="userEmail" class="small"></div></div><button id="logoutBtn" class="save danger">Odhlásit</button></div><div class="admin-tabs"><button data-tab="photo" class="active">1. Hlavní foto</button><button data-tab="docs">2. PDF podle zemí</button><button data-tab="ids">3. IČO / DIČ / DPH</button></div><section id="tab-photo" class="admin-pane active"><h2>Jedna hlavní fotografie</h2><p class="small">Nahraj jednu fotografii. Nová nahrávka nahradí předchozí.</p><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"><button id="uploadPhoto" class="save">Nahrát / nahradit</button><div id="photoStatus" class="status"></div></section><section id="tab-docs" class="admin-pane"><h2>PDF ceníky podle zemí</h2><div class="form-grid"><label class="field"><span>Země</span><select id="docCountry"><option value="CZ">Česko</option><option value="SI">Slovenija</option><option value="SK">Slovensko</option><option value="DE">Deutschland</option><option value="PL">Polska</option><option value="HU">Magyarország</option><option value="HR">Hrvatska</option><option value="RO">România</option><option value="UA">Україна</option><option value="GB">United Kingdom</option></select></label><label class="field"><span>Název dokumentu</span><input id="docTitle" value="Ceník služeb"></label><label class="field full"><span>PDF</span><input id="docFile" type="file" accept="application/pdf"></label></div><button id="uploadDoc" class="save">Nahrát PDF</button><div id="docStatus" class="status"></div><div id="docList" class="list"></div></section><section id="tab-ids" class="admin-pane"><h2>Identifikace firmy podle zemí</h2><p class="small">Sem patří například IČO, DIČ, DPH, matična številka, davčna številka, ЄДРПОУ atd.</p><div class="form-grid"><label class="field"><span>Země</span><select id="idCountry"><option value="CZ">Česko</option><option value="SI">Slovenija</option><option value="SK">Slovensko</option><option value="UA">Україна</option><option value="DE">Deutschland</option></select></label><label class="field"><span>Název pole</span><input id="idLabel" placeholder="IČO"></label><label class="field"><span>Hodnota</span><input id="idValue" placeholder="53972775"></label></div><button id="saveId" class="save">Uložit údaj</button><div id="idStatus" class="status"></div><div id="idList" class="list"></div></section></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="admin.js"></script></body></html>
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WOND Admin</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #app { background: var(--bg); padding: 2rem; }
+    .admin-section { margin: 2rem 0; padding: 1.5rem; background: var(--card); border-radius: 0.5rem; border: 1px solid var(--line); }
+    .admin-section h3 { margin-top: 0; color: var(--ink); }
+    input, select, textarea { display: block; width: 100%; margin: 0.5rem 0; padding: 0.5rem; border: 1px solid var(--line); border-radius: 0.25rem; font-family: inherit; font-size: 1rem; }
+    input[type="file"] { padding: 0.25rem; }
+    button { background: var(--accent); color: var(--dark); border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; }
+    button:hover { opacity: 0.9; }
+    .status { min-height: 1.5rem; font-size: 0.9rem; margin-top: 0.5rem; }
+    .status.error { color: #d32f2f; }
+    .status.success { color: #2e7d32; }
+    #login { max-width: 400px; margin: 4rem auto; padding: 2rem; background: var(--card); border: 1px solid var(--line); border-radius: 0.5rem; }
+    #login h2 { margin-top: 0; }
+    .user-info { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg); border-radius: 0.5rem; margin-bottom: 2rem; }
+    .user-info button { margin: 0; padding: 0.5rem 1rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="login" hidden>
+      <h2>WOND Admin</h2>
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="admin@example.com">
+      <label for="password">Heslo:</label>
+      <input type="password" id="password" placeholder="••••••••">
+      <button id="loginBtn">Přihlásit se</button>
+      <div id="loginStatus" class="status"></div>
+    </section>
+
+    <section id="app" hidden>
+      <div class="user-info">
+        <span>Přihlášen jako: <strong id="userEmail"></strong></span>
+        <button id="logoutBtn">Odhlásit se</button>
+      </div>
+      <div id="logoutStatus" class="status"></div>
+
+      <div class="admin-section">
+        <h3>📸 Hlavní fotografie</h3>
+        <input type="file" id="photo" accept="image/*">
+        <button id="uploadPhoto">Nahrát fotografii</button>
+        <div id="photoStatus" class="status"></div>
+      </div>
+
+      <div class="admin-section">
+        <h3>📄 Ceníky (PDF)</h3>
+        <label for="docCountry">Země:</label>
+        <select id="docCountry">
+          <option value="">-- Vyber zemi --</option>
+          <option value="CZ">Česko</option>
+          <option value="SK">Slovensko</option>
+          <option value="SI">Slovenija</option>
+          <option value="DE">Deutschland</option>
+          <option value="PL">Polska</option>
+          <option value="HU">Magyarország</option>
+          <option value="HR">Hrvatska</option>
+          <option value="RO">România</option>
+          <option value="UA">Україна</option>
+          <option value="GB">United Kingdom</option>
+        </select>
+        <label for="docTitle">Název (volitelný):</label>
+        <input type="text" id="docTitle" placeholder="Ceník služeb">
+        <input type="file" id="docFile" accept="application/pdf">
+        <button id="uploadDoc">Nahrát PDF ceník</button>
+        <div id="docStatus" class="status"></div>
+        <div id="docList" style="margin-top: 1rem; font-size: 0.9rem;"></div>
+      </div>
+
+      <div class="admin-section">
+        <h3>🏢 Firemní údaje (IČO, DIČ, ...)</h3>
+        <label for="idCountry">Země:</label>
+        <select id="idCountry">
+          <option value="">-- Vyber zemi --</option>
+          <option value="CZ">Česko</option>
+          <option value="SK">Slovensko</option>
+          <option value="SI">Slovenija</option>
+          <option value="DE">Deutschland</option>
+          <option value="PL">Polska</option>
+          <option value="HU">Magyarország</option>
+          <option value="HR">Hrvatska</option>
+          <option value="RO">România</option>
+          <option value="UA">Україна</option>
+          <option value="GB">United Kingdom</option>
+        </select>
+        <label for="idLabel">Název (IČO, DIČ, DPH, ...):</label>
+        <input type="text" id="idLabel" placeholder="IČO">
+        <label for="idValue">Hodnota:</label>
+        <input type="text" id="idValue" placeholder="12345678">
+        <button id="saveId">Uložit údaj</button>
+        <div id="idStatus" class="status"></div>
+        <div id="idList" style="margin-top: 1rem; font-size: 0.9rem;"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
